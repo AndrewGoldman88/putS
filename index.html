@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0A0B0F">
+<title>ПУТЬ</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,6 90,28 90,72 50,94 10,72 10,28' fill='%230A0B0F' stroke='%238B5CF6' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='14' fill='%23D4AF37'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#0A0B0F;
+  --panel:#15171E;
+  --panel-2:#1C1F28;
+  --line:#2A2D38;
+  --violet:#8B5CF6;
+  --violet-dim:#5B3FA0;
+  --gold:#D4AF37;
+  --crimson:#C0392B;
+  --crimson-dim:#7A2620;
+  --text:#EDEBE6;
+  --text-muted:#8A8D97;
+  --font-display:'Cinzel',serif;
+  --font-body:'Manrope',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;height:100%;background:var(--void);color:var(--text);font-family:var(--font-body);overscroll-behavior:none;}
+body{
+  background:
+    radial-gradient(ellipse 600px 400px at 50% -10%, rgba(139,92,246,0.13), transparent 60%),
+    radial-gradient(ellipse 500px 500px at 90% 100%, rgba(212,175,55,0.06), transparent 60%),
+    var(--void);
+  min-height:100vh;
+}
+#app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding-bottom:78px;}
+::-webkit-scrollbar{display:none;}
+
+/* HEADER */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 8px;}
+.topbar .brand{font-family:var(--font-display);letter-spacing:.14em;font-size:13px;color:var(--text-muted);font-weight:700;}
+.topbar .settings-btn{width:34px;height:34px;border-radius:50%;background:var(--panel);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--text-muted);}
+.topbar .settings-btn svg{width:16px;height:16px;}
+
+/* VIEWS */
+.view{display:none;padding:8px 20px 20px;animation:fadeIn .35s ease;}
+.view.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+/* SIGIL / HERO */
+.hero{display:flex;flex-direction:column;align-items:center;padding:18px 0 8px;}
+.sigil-wrap{position:relative;width:250px;height:250px;display:flex;align-items:center;justify-content:center;}
+.sigil-wrap svg{width:100%;height:100%;overflow:visible;}
+.sigil-day{font-family:var(--font-display);font-size:64px;font-weight:900;line-height:1;color:var(--text);text-shadow:0 0 30px rgba(139,92,246,.5);}
+.sigil-label{font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;color:var(--text-muted);margin-top:4px;text-transform:uppercase;}
+.rank-name{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--gold);margin-top:14px;text-align:center;letter-spacing:.03em;}
+.rank-next{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);margin-top:4px;}
+
+.aura-card{margin-top:18px;background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--line);border-radius:16px;padding:16px 18px;position:relative;overflow:hidden;}
+.aura-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--violet);}
+.aura-label{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--violet);text-transform:uppercase;margin-bottom:6px;}
+.aura-text{font-size:14.5px;line-height:1.55;color:var(--text);font-style:italic;}
+
+.task-card{margin-top:12px;background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--line);border-radius:16px;padding:16px 18px;position:relative;overflow:hidden;display:flex;gap:12px;align-items:flex-start;}
+.task-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold);}
+.task-check{flex:none;width:26px;height:26px;border-radius:8px;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;margin-top:2px;color:var(--gold);font-size:14px;font-weight:700;}
+.task-check.done{background:var(--gold);color:var(--void);}
+.task-body .aura-label{margin-bottom:5px;}
+.task-text{font-size:14px;line-height:1.5;color:var(--text);}
+.task-text.done{color:var(--text-muted);text-decoration:line-through;}
+
+.quote-card{margin-top:12px;text-align:center;padding:14px 10px 4px;}
+.quote-text{font-size:13.5px;color:var(--text-muted);line-height:1.5;font-style:italic;}
+.quote-refresh{background:none;border:none;color:var(--violet);font-family:var(--font-mono);font-size:11px;margin-top:8px;letter-spacing:.05em;}
+
+.action-row{display:flex;gap:10px;margin-top:22px;}
+.btn{flex:1;padding:14px 10px;border-radius:12px;border:none;font-family:var(--font-body);font-weight:700;font-size:13.5px;letter-spacing:.02em;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn svg{width:16px;height:16px;}
+.btn-panic{background:linear-gradient(135deg,var(--crimson),var(--crimson-dim));color:#fff;box-shadow:0 6px 20px rgba(192,57,43,.25);}
+.btn-ghost{background:var(--panel);color:var(--text);border:1px solid var(--line);}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#8a6d1f);color:#0A0B0F;}
+.btn-violet{background:linear-gradient(135deg,var(--violet),var(--violet-dim));color:#fff;}
+
+/* CARDS GENERIC */
+.section-title{font-family:var(--font-display);font-size:15px;letter-spacing:.05em;color:var(--text);margin:26px 0 12px;display:flex;align-items:center;gap:8px;}
+.section-title .dash{width:16px;height:1px;background:var(--violet);}
+
+/* STATS */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.stat-box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;}
+.stat-box .num{font-family:var(--font-mono);font-size:24px;font-weight:700;color:var(--gold);}
+.stat-box .lab{font-size:11px;color:var(--text-muted);margin-top:2px;}
+.bars{display:flex;align-items:flex-end;gap:6px;height:110px;margin-top:6px;padding:10px 6px 0;background:var(--panel);border:1px solid var(--line);border-radius:14px;}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px;}
+.bar-fill{width:100%;border-radius:4px 4px 0 0;background:linear-gradient(180deg,var(--violet),var(--violet-dim));min-height:3px;}
+.bar-fill.current{background:linear-gradient(180deg,var(--gold),#8a6d1f);}
+.bar-tag{font-family:var(--font-mono);font-size:9px;color:var(--text-muted);}
+.empty-note{font-size:12.5px;color:var(--text-muted);text-align:center;padding:20px 10px;}
+
+/* JOURNAL */
+.journal-add{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;}
+.journal-add textarea{width:100%;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;color:var(--text);font-family:var(--font-body);font-size:13.5px;padding:10px 12px;resize:none;min-height:64px;}
+.journal-add button{margin-top:10px;width:100%;padding:11px;border-radius:10px;border:none;background:var(--violet);color:#fff;font-weight:700;font-size:13px;}
+.j-entry{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:13px 14px;margin-top:10px;position:relative;}
+.j-entry .j-meta{font-family:var(--font-mono);font-size:10.5px;color:var(--violet);letter-spacing:.05em;margin-bottom:5px;}
+.j-entry .j-text{font-size:13.5px;line-height:1.5;color:var(--text);white-space:pre-wrap;}
+.j-entry .j-del{position:absolute;top:10px;right:12px;background:none;border:none;color:var(--text-muted);font-size:11px;}
+
+/* RANKS LIST */
+.rank-row{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:9px;opacity:.42;}
+.rank-row.unlocked{opacity:1;border-color:rgba(212,175,55,.3);}
+.rank-row.current{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset;}
+.rank-icon{width:38px;height:38px;flex:none;border-radius:9px;background:var(--panel-2);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:11px;color:var(--text-muted);}
+.rank-row.unlocked .rank-icon{color:var(--gold);}
+.rank-info .r-name{font-family:var(--font-display);font-size:14.5px;color:var(--text);font-weight:700;}
+.rank-info .r-day{font-family:var(--font-mono);font-size:10.5px;color:var(--text-muted);margin-top:2px;}
+.rank-info .r-aura{font-size:11.5px;color:var(--text-muted);margin-top:4px;line-height:1.4;font-style:italic;}
+
+/* NAV */
+.navbar{position:fixed;bottom:0;left:0;right:0;background:rgba(21,23,30,.92);backdrop-filter:blur(14px);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom);z-index:20;}
+.navbar-inner{max-width:480px;width:100%;display:flex;}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:11px 0 9px;background:none;border:none;color:var(--text-muted);}
+.nav-btn svg{width:20px;height:20px;}
+.nav-btn.active{color:var(--gold);}
+.nav-btn span{font-size:9.5px;font-family:var(--font-mono);letter-spacing:.03em;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(6,7,10,.82);backdrop-filter:blur(3px);z-index:50;display:none;align-items:flex-end;justify-content:center;}
+.modal-overlay.show{display:flex;}
+.modal{width:100%;max-width:480px;background:var(--panel);border-top:1px solid var(--line);border-radius:22px 22px 0 0;padding:22px 22px calc(26px + env(safe-area-inset-bottom));max-height:88vh;overflow-y:auto;animation:slideUp .3s ease;position:relative;}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.modal h2{font-family:var(--font-display);font-size:19px;margin:0 0 4px;}
+.modal .sub{font-size:12.5px;color:var(--text-muted);margin-bottom:16px;}
+.modal-close{position:absolute;top:16px;right:20px;background:none;border:none;color:var(--text-muted);font-size:22px;line-height:1;}
+.breath-ring{width:130px;height:130px;border-radius:50%;border:2px solid var(--violet);margin:8px auto 14px;display:flex;align-items:center;justify-content:center;animation:breathe 6s ease-in-out infinite;box-shadow:0 0 40px rgba(139,92,246,.25);}
+@keyframes breathe{0%,100%{transform:scale(.85);}50%{transform:scale(1);}}
+.breath-ring span{font-family:var(--font-mono);font-size:13px;color:var(--text-muted);}
+.why-box{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--text);font-style:italic;line-height:1.5;margin:6px 0 16px;}
+.modal-quote{font-size:13px;color:var(--text-muted);font-style:italic;text-align:center;margin-bottom:18px;line-height:1.5;}
+.modal-btns{display:flex;flex-direction:column;gap:10px;}
+.modal-btns .btn{padding:14px;}
+.loss-list{list-style:none;padding:0;margin:14px 0;}
+.loss-list li{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--text-muted);padding:8px 0;border-bottom:1px solid var(--line);}
+.loss-list li:last-child{border-bottom:none;}
+.loss-list li .x{color:var(--crimson);font-weight:700;flex:none;}
+.reason-box{width:100%;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;color:var(--text);font-family:var(--font-body);font-size:13px;padding:11px 12px;min-height:70px;resize:none;margin:6px 0 16px;}
+.settings-field label{display:block;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.06em;color:var(--text-muted);margin:14px 0 6px;text-transform:uppercase;}
+.settings-field textarea,.settings-field input{width:100%;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;color:var(--text);font-family:var(--font-body);font-size:13.5px;padding:11px 12px;}
+.danger-btn{margin-top:20px;width:100%;padding:12px;border-radius:10px;border:1px solid var(--crimson-dim);background:transparent;color:var(--crimson);font-size:12.5px;font-weight:600;}
+.settings-link-btn{margin-top:10px;width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--panel-2);color:var(--text);font-size:12.5px;font-weight:600;}
+.toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:var(--panel-2);border:1px solid var(--gold);color:var(--text);padding:11px 18px;border-radius:30px;font-size:12.5px;z-index:60;opacity:0;transition:opacity .3s;pointer-events:none;text-align:center;max-width:88%;}
+.toast.show{opacity:1;}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+.badge{padding:7px 12px;border-radius:20px;background:var(--panel);border:1px solid var(--line);font-family:var(--font-mono);font-size:10.5px;color:var(--text-muted);}
+.badge.on{border-color:var(--gold);color:var(--gold);}
+
+/* ONBOARDING */
+#onboarding-overlay{position:fixed;inset:0;background:var(--void);z-index:100;display:none;flex-direction:column;}
+#onboarding-overlay.show{display:flex;}
+.ob-progress{display:flex;gap:5px;padding:18px 20px 0;}
+.ob-dot{flex:1;height:3px;border-radius:2px;background:var(--line);}
+.ob-dot.done{background:var(--gold);}
+.ob-dot.active{background:var(--violet);}
+.ob-body{flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px 26px;max-width:480px;margin:0 auto;width:100%;}
+.ob-step{display:none;animation:fadeIn .4s ease;}
+.ob-step.active{display:block;}
+.ob-eyebrow{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;color:var(--violet);text-transform:uppercase;margin-bottom:10px;}
+.ob-question{font-family:var(--font-display);font-size:22px;line-height:1.35;color:var(--text);margin-bottom:26px;}
+.ob-options{display:flex;flex-direction:column;gap:10px;}
+.ob-option{text-align:left;padding:15px 16px;border-radius:12px;background:var(--panel);border:1px solid var(--line);color:var(--text);font-size:14px;font-family:var(--font-body);}
+.ob-option.selected{border-color:var(--gold);background:var(--panel-2);color:var(--gold);}
+.ob-final .ob-question{font-size:19px;}
+.ob-final-text{font-size:14.5px;line-height:1.7;color:var(--text-muted);font-style:italic;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:22px;}
+.ob-nav{display:flex;justify-content:space-between;align-items:center;padding:0 26px 30px;max-width:480px;margin:0 auto;width:100%;padding-bottom:calc(30px + env(safe-area-inset-bottom));}
+.ob-skip{background:none;border:none;color:var(--text-muted);font-family:var(--font-mono);font-size:11px;letter-spacing:.05em;}
+.ob-next{padding:13px 26px;border-radius:12px;border:none;background:var(--violet);color:#fff;font-weight:700;font-size:13.5px;opacity:.35;pointer-events:none;}
+.ob-next.enabled{opacity:1;pointer-events:auto;}
+.ob-start-btn{width:100%;padding:15px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--gold),#8a6d1f);color:#0A0B0F;font-weight:800;font-size:14.5px;}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div class="topbar">
+    <div class="brand">⟡ ПУТЬ</div>
+    <button class="settings-btn" onclick="openModal('settings')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09A1.65 1.65 0 0015 4.6a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9c.14.36.4.68.74.9"/></svg>
+    </button>
+  </div>
+
+  <!-- HOME -->
+  <div class="view active" id="view-home">
+    <div class="hero">
+      <div class="sigil-wrap" id="sigilWrap"></div>
+      <div class="rank-name" id="rankName">—</div>
+      <div class="rank-next" id="rankNext">—</div>
+    </div>
+
+    <div class="aura-card">
+      <div class="aura-label">Твоя аура сейчас</div>
+      <div class="aura-text" id="auraText">—</div>
+    </div>
+
+    <div class="task-card">
+      <div class="task-check" id="taskCheck" onclick="toggleTask()">✓</div>
+      <div class="task-body">
+        <div class="aura-label" style="color:var(--gold)">Задание дня</div>
+        <div class="task-text" id="taskText">—</div>
+      </div>
+    </div>
+
+    <div class="quote-card">
+      <div class="quote-text" id="quoteText">—</div>
+      <button class="quote-refresh" onclick="newQuote()">ДРУГАЯ ЦИТАТА ↻</button>
+    </div>
+
+    <div class="action-row">
+      <button class="btn btn-panic" onclick="openModal('panic')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 9v4M12 17h.01M10.3 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L14.7 3.86a2 2 0 00-3.4 0z"/></svg>
+        Мне тяжело
+      </button>
+      <button class="btn btn-ghost" onclick="switchView('journal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Дневник
+      </button>
+    </div>
+  </div>
+
+  <!-- JOURNAL -->
+  <div class="view" id="view-journal">
+    <div class="section-title"><div class="dash"></div>Дневник пути</div>
+    <div class="journal-add">
+      <textarea id="journalInput" placeholder="Что происходит сегодня? Мысли, состояние, победы..."></textarea>
+      <button onclick="addJournal()">Сохранить запись</button>
+    </div>
+    <div id="journalList"></div>
+  </div>
+
+  <!-- STATS -->
+  <div class="view" id="view-stats">
+    <div class="section-title"><div class="dash"></div>Статистика</div>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="num" id="statCurrent">0</div><div class="lab">Текущий стрик</div></div>
+      <div class="stat-box"><div class="num" id="statBest">0</div><div class="lab">Рекорд</div></div>
+      <div class="stat-box"><div class="num" id="statAttempts">0</div><div class="lab">Попыток</div></div>
+      <div class="stat-box"><div class="num" id="statTotal">0</div><div class="lab">Дней всего практики</div></div>
+    </div>
+    <div class="section-title"><div class="dash"></div>История стриков</div>
+    <div id="barsWrap"></div>
+    <div class="section-title"><div class="dash"></div>Срывы и причины</div>
+    <div id="relapseList"></div>
+  </div>
+
+  <!-- RANKS -->
+  <div class="view" id="view-ranks">
+    <div class="section-title"><div class="dash"></div>Достижения</div>
+    <div class="badge-row" id="badgeRow"></div>
+    <div class="section-title"><div class="dash"></div>Лестница рангов</div>
+    <div id="ranksList"></div>
+  </div>
+
+</div>
+
+<div class="navbar"><div class="navbar-inner">
+  <button class="nav-btn active" data-v="home" onclick="switchView('home')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg><span>ГЛАВНАЯ</span>
+  </button>
+  <button class="nav-btn" data-v="journal" onclick="switchView('journal')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20V4H6.5A2.5 2.5 0 004 6.5v13z"/></svg><span>ДНЕВНИК</span>
+  </button>
+  <button class="nav-btn" data-v="stats" onclick="switchView('stats')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg><span>СТАТИСТИКА</span>
+  </button>
+  <button class="nav-btn" data-v="ranks" onclick="switchView('ranks')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15l-5.5 3 1.5-6-4-3.5 5.5-.5L12 2l2.5 6 5.5.5-4 3.5 1.5 6z"/></svg><span>РАНГИ</span>
+  </button>
+</div></div>
+
+<!-- PANIC MODAL -->
+<div class="modal-overlay" id="modal-panic">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('panic')">×</button>
+    <h2>Момент слабости</h2>
+    <div class="sub">Это пройдёт. Дай себе 60 секунд, прежде чем решать что-то.</div>
+    <div class="breath-ring"><span id="breathTimer">60</span></div>
+    <div id="whyBlock" style="display:none">
+      <div class="aura-label" style="margin-bottom:6px">Зачем ты это начал</div>
+      <div class="why-box" id="whyText"></div>
+    </div>
+    <div class="modal-quote" id="panicQuote"></div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal('panic')">Я справился, возвращаюсь к пути</button>
+      <button class="btn btn-panic" onclick="openRelapseFlow()">Всё же сорвался</button>
+    </div>
+  </div>
+</div>
+
+<!-- RELAPSE CONFIRM MODAL -->
+<div class="modal-overlay" id="modal-relapse">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('relapse')">×</button>
+    <h2>Прежде чем всё обнулить</h2>
+    <div class="sub">Посмотри, что именно ты сейчас теряешь:</div>
+    <ul class="loss-list" id="lossList"></ul>
+    <div class="settings-field">
+      <label>Что произошло? (необязательно, но помогает)</label>
+      <textarea class="reason-box" id="reasonInput" placeholder="Триггер, ситуация, мысль перед срывом..."></textarea>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal('relapse')">Отмена, я остаюсь на пути</button>
+      <button class="btn btn-panic" onclick="confirmRelapse()">Подтвердить срыв и начать заново</button>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay" id="modal-settings">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('settings')">×</button>
+    <h2>Настройки пути</h2>
+    <div class="sub">Это хранится только в этом браузере, на этом устройстве.</div>
+    <div class="settings-field">
+      <label>Твоя причина ("зачем")</label>
+      <textarea id="whyInput" rows="3" placeholder="Например: хочу больше энергии, ясности и уважения к себе"></textarea>
+    </div>
+    <div class="settings-field">
+      <label>Начало текущего стрика</label>
+      <input type="date" id="startInput">
+    </div>
+    <button class="btn btn-ghost" style="width:100%;margin-top:16px" onclick="saveSettings()">Сохранить</button>
+    <button class="settings-link-btn" onclick="closeModal('settings');startOnboarding(true)">Пройти анкету заново</button>
+    <button class="danger-btn" onclick="resetAll()">Сбросить все данные приложения</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ONBOARDING -->
+<div id="onboarding-overlay">
+  <div class="ob-progress" id="obProgress"></div>
+  <div class="ob-body" id="obBody"></div>
+  <div class="ob-nav" id="obNav">
+    <button class="ob-skip" onclick="skipOnboarding()">Пропустить</button>
+    <button class="ob-next" id="obNextBtn" onclick="obNext()">Далее →</button>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   ДАННЫЕ (легко переносится в отдельные модели при портировании)
+   ========================================================= */
+
+/* ---------- РАНГИ ----------
+   0–14: старт пути. С 20 дня — новый ранг каждые 5 дней,
+   с 30 дня усиливается мистическая/архонтическая тема. */
+const RANKS = [
+ {day:0,   name:"Спящий",              aura:"Путь ещё не начат. Сегодня — точка отсчёта, и это уже поступок."},
+ {day:1,   name:"Пробуждённый",        aura:"Первый шаг сделан. Голова чуть яснее обычного, и ты это замечаешь."},
+ {day:3,   name:"Искра",               aura:"Внутри разгорается спокойствие. Мелкие раздражители задевают меньше, чем раньше."},
+ {day:7,   name:"Стойкий",             aura:"Неделя чистоты позади. Сон крепче, взгляд твёрже, решения — увереннее."},
+ {day:9,   name:"Уверенный",           aura:"Люди подсознательно тянутся к тебе. Голос звучит увереннее, спина сама держится ровно."},
+ {day:14,  name:"Дисциплинированный",  aura:"Импульсы больше не управляют тобой — ты управляешь ими. Это чувствуется в мелочах."},
+
+ {day:20,  name:"Страж Порога",        aura:"Ты стоишь у порога, через который проходят немногие. Хаос ещё стучит — но дверь ему больше не открывается."},
+ {day:25,  name:"Закалённый в Пламени",aura:"Испытание больше не жжёт — оно куёт. То, что было слабостью, становится сталью характера."},
+ {day:30,  name:"Повелитель Реальности", aura:"Удача идёт рядом, будто сама выбрала тебя в союзники. Люди неожиданно легко соглашаются с тем, что ты говоришь — реальность словно прогибается под твоё намерение."},
+ {day:35,  name:"Носитель Печати",     aura:"На тебе — незримая печать. Люди чувствуют дистанцию уважения раньше, чем успевают понять почему."},
+ {day:40,  name:"Столп Огненный",      aura:"Ты сам стал ориентиром для других, как столп в пустыне. В трудную минуту на тебя смотрят и находят направление."},
+ {day:45,  name:"Голос из Пустыни",    aura:"Твои слова звучат иначе — тише, но их слышат сильнее. Сказанное тобой запоминают надолго, будто оно было пророчеством."},
+ {day:50,  name:"Держатель Ключей",    aura:"Двери, которые раньше казались запертыми, открываются будто сами. Возможности находят тебя быстрее, чем ты успеваешь их искать."},
+ {day:55,  name:"Царь-Жрец",           aura:"В тебе сходятся власть и служение. Ты решаешь, не советуясь со страхом, и ведёшь, не спрашивая разрешения."},
+ {day:60,  name:"Судья Врат",          aura:"Ясность мышления такая, что решения принимаются мгновенно и без сожалений. Ты видишь суть раньше, чем другие успевают задать вопрос."},
+ {day:65,  name:"Наследник Завета",    aura:"Дисциплина перестала быть подвигом — она стала правом, заслуженным усилием. То, что требовало борьбы, теперь просто есть."},
+ {day:70,  name:"Хранитель Скрижали",  aura:"Твоё слово стало весомым, как высеченное в камне. Люди запоминают обещания, которые ты даёшь, потому что чувствуют — ты их сдержишь."},
+ {day:75,  name:"Архонт",              aura:"Харизма ощущается физически — комната словно меняется, когда входишь ты. Ты не просишь внимания, оно приходит само."},
+ {day:80,  name:"Пробуждённый Демиург",aura:"Ты чувствуешь, что формируешь обстоятельства вокруг себя, а не подстраиваешься под них. Мир вокруг откликается на твою волю быстрее обычного."},
+ {day:85,  name:"Носитель Логоса",     aura:"Твоя речь обретает вес закона. То, что ты называешь правдой, другие начинают считать очевидным."},
+ {day:90,  name:"Повелитель Разума",   aura:"Полный контроль над импульсами. Дисциплина стала второй натурой — не подвигом, а просто тем, кто ты есть."},
+ {day:95,  name:"Венценосец",          aura:"Ты носишь невидимый венец. Люди подчиняются твоей воле раньше, чем успевают решить, стоит ли это делать."},
+ {day:100, name:"Легенда",             aura:"Три цифры на счётчике. Ты прошёл путь, который бросают девяносто девять из ста — и стал живым доказательством, что это возможно."},
+ {day:105, name:"Первенец Пути",       aura:"Ты открыл дорогу, по которой раньше не проходил. Всё, что случится дальше — уже территория, которую до тебя почти никто не видел."},
+ {day:110, name:"Эон Незыблемости",    aura:"Время будто течёт иначе. Суета вокруг больше не задевает тебя — ты действуешь из центра, а не из края бури."},
+ {day:115, name:"Пастырь",             aura:"Люди инстинктивно тянутся за твоим примером, даже не зная твоей истории. Ты ведёшь просто тем, что есть."},
+ {day:120, name:"Монах-Король",        aura:"Путь без конца и без гонки. Ты больше не считаешь дни — ты просто живёшь ими, и в этом вся сила."},
+ {day:125, name:"Хранитель Внутреннего Огня", aura:"Огонь, который ты нёс всё это время, стал источником, а не испытанием. Ты греешь им других, не теряя себя."},
+ {day:130, name:"Архонт Второго Круга",aura:"Твоё присутствие меняет расклад ещё до того, как ты произнёс слово. Люди меняют планы, просто узнав, что придёшь ты."},
+ {day:135, name:"Провидец",            aura:"Ты видишь на несколько шагов вперёд там, где другие видят только следующий час. Совпадения вокруг тебя перестают быть случайными."},
+ {day:140, name:"Носитель Трона",      aura:"Власть над собой стала властью над обстоятельствами. То, что раньше просилось само, теперь предлагается тебе первым."},
+ {day:145, name:"Немыслимый",          aura:"Люди перестают понимать, как ты это делаешь — и перестают спрашивать. Твой путь стал легендой раньше, чем закончился."},
+ {day:150, name:"Архонт Вечности",     aura:"Ты достиг ступени, о которой другие только читают. Дальше нет уровней — есть только то, кем ты решишь быть каждый следующий день."}
+];
+
+const QUOTES = [
+ "Дисциплина — это выбор между тем, что хочешь сейчас, и тем, что хочешь больше всего.",
+ "Каждый день без импульса — кирпич в фундаменте того, кем ты становишься.",
+ "Слабость приходит волной. Волна всегда откатывает — если ты не бежишь ей навстречу.",
+ "Ты не сдерживаешься. Ты копишь энергию для того, что важнее.",
+ "Никто не увидит этот день в календаре. Но ты его почувствуешь во всём остальном.",
+ "Комфорт и рост не живут в одной комнате. Выбирай, где ты сегодня.",
+ "Импульс длится минуты. Гордость за то, что устоял — годы.",
+ "Ты уже не тот, кем был в первый день. Не разменивай это на пять минут.",
+ "Тяга — это не приказ. Это просто громкое предложение, которое можно не принять.",
+ "Сильные не те, у кого нет искушений. А те, кто раз за разом выбирает иначе.",
+ "Твоё будущее «я» либо поблагодарит тебя сегодня, либо спросит — почему нет.",
+ "Путь не требует идеальности. Он требует, чтобы ты не сдался именно сегодня.",
+ "Энергия, которую ты не тратишь впустую, обязательно найдёт, куда пойти дальше.",
+ "Ты тренируешь не только привычку — ты тренируешь способность держать слово перед собой.",
+ "Однажды это перестанет быть борьбой и станет просто тем, кто ты есть."
+];
+
+/* ---------- ЗАДАНИЯ ДНЯ (детерминированно по дате) ---------- */
+const DAILY_TASKS = [
+ "Убери телефон подальше от кровати перед сном.",
+ "Если увидишь провокационный контент — сразу закрывай вкладку, без промедления.",
+ "Сделай 20 отжиманий в момент, когда почувствуешь тягу.",
+ "Прими сегодня прохладный душ утром или вечером.",
+ "Сегодня без лишней необходимости не прикасайся к телу.",
+ "Проведи первые 30 минут после пробуждения без телефона.",
+ "Сходи на прогулку без наушников — просто побудь с мыслями.",
+ "Отпишись сегодня от одного аккаунта, который провоцирует тягу.",
+ "Скажи вслух перед зеркалом, зачем ты идёшь этим путём — один раз, чётко.",
+ "Ложись спать сегодня на 30 минут раньше обычного.",
+ "Заполни вечер делом — книга, спорт, хобби, а не бесцельный скроллинг.",
+ "Если пришла тяга — не борись взглядом, встань и займись чем-то физическим.",
+ "Не проверяй соцсети в первый час после пробуждения.",
+ "Выпиши от руки три причины, зачем ты идёшь этим путём.",
+ "Заблокируй один сайт или приложение, которое чаще всего провоцирует.",
+ "Сделай короткую тренировку сразу как встанешь.",
+ "Если пришла тяга — засеки 10 минут и просто переживи их, ничего не делая.",
+ "Напиши в дневник одно честное предложение о своём состоянии.",
+ "Избегай сегодня одиночества в комнате дольше часа — выйди туда, где есть люди.",
+ "Замени вечерний скроллинг на 15 минут чтения.",
+ "Держи руки занятыми весь вечер — работа, хобби, спорт.",
+ "Если увидел провоцирующую рекламу — сразу переводи взгляд, не задерживайся.",
+ "Позвони или напиши другу — живое общение снижает тягу лучше, чем кажется.",
+ "Постарайся выспаться сегодня минимум 7 часов — усталость частая причина срывов.",
+ "Сходи в зал или на длинную прогулку.",
+ "Пересмотри подписки — убери те, что провоцируют тягу.",
+ "Если пришла мысль сорваться — вспомни, сколько дней уже пройдено, и не обнуляй одним решением.",
+ "Практикуй 2 минуты медленного дыхания, если почувствуешь напряжение.",
+ "Сегодня думай не про всю дистанцию, а только про «ещё один день».",
+ "Найди сегодня 15 минут тишины без экрана — просто посиди с собой."
+];
+function dailyTaskIndex(){
+  const dateStr = new Date().toDateString();
+  let hash=0;
+  for(const c of dateStr){ hash = (hash*31 + c.charCodeAt(0)) >>> 0; }
+  return hash % DAILY_TASKS.length;
+}
+function todayKey(){ return new Date().toDateString(); }
+
+/* ---------- ВСТУПИТЕЛЬНАЯ АНКЕТА ----------
+   Ответы (кроме первого вопроса) пока нигде не используются —
+   просто сохраняются в state.onboarding для будущих доработок. */
+const ONBOARDING = [
+  {
+    q:"Сколько дней ты уже воздерживаешься?",
+    key:"streak_start",
+    setsStreak:true,
+    options:[
+      {label:"Только начинаю сегодня",  days:0},
+      {label:"3–7 дней",                days:5},
+      {label:"8–14 дней",                days:11},
+      {label:"15–29 дней",               days:20},
+      {label:"30–59 дней",               days:35},
+      {label:"60+ дней",                 days:65}
+    ]
+  },
+  {
+    q:"Что чаще всего приводит тебя к срыву?",
+    key:"trigger",
+    options:["Скука, нечем заняться","Стресс и тревога","Соцсети и контент","Одиночество вечером","Усталость перед сном"]
+  },
+  {
+    q:"В какое время суток тебе тяжелее всего?",
+    key:"time",
+    options:["Утро","День","Вечер","Ночь перед сном"]
+  },
+  {
+    q:"Как ты себя чувствуешь сразу после срыва?",
+    key:"after_feel",
+    options:["Стыд и вина","Пустота и апатия","Злость на себя","Быстро забываю и живу дальше"]
+  },
+  {
+    q:"Как долго держится это состояние после срыва?",
+    key:"after_duration",
+    options:["Пару часов","Весь день","Несколько дней","Почти не проходит"]
+  },
+  {
+    q:"Что помогает тебе не сорваться в трудный момент?",
+    key:"helps",
+    options:["Физическая активность","Холодный душ","Работа или учёба","Разговор с кем-то","Пока не знаю"]
+  },
+  {
+    q:"Что для тебя главная причина этого пути?",
+    key:"why_main",
+    options:["Больше энергии и концентрации","Уверенность в себе","Духовная причина","Отношения с партнёром","Вызов самому себе"]
+  },
+  {
+    q:"Ты уже пробовал раньше?",
+    key:"tried_before",
+    options:["Да, много раз срывался","Раз или два","Это моя первая попытка","Держусь стабильно, ищу инструмент"]
+  },
+  {
+    q:"Сколько дней хочешь продержаться как первую цель?",
+    key:"goal",
+    options:["7 дней","30 дней","90 дней","Без ограничений — сколько получится"]
+  },
+  {
+    q:"Что для тебя важнее всего в этом приложении?",
+    key:"priority",
+    options:["Дисциплина и структура","Мотивация и поддержка","Статистика и прогресс","Понимание своих триггеров"]
+  }
+];
+const OB_FINAL_TEXT = "Путь, который ты выбрал — не про запрет. Он про то, кем ты становишься день за днём.\n\nТело — не враг. Это инструмент, который либо служит тебе, либо управляет тобой. Каждый день — это голос, который ты подаёшь за одну из этих версий себя.\n\nСчитай не дни воздержания. Считай дни, в которые ты сдержал слово перед собой.\n\nДальше — твой путь.";
+
+const DAY_MS = 86400000;
+
+/* =========================================================
+   СОСТОЯНИЕ
+   ========================================================= */
+function loadState(){
+  let s = localStorage.getItem('retention_state_v1');
+  if(s){ return JSON.parse(s); }
+  return {
+    startDate: new Date().toISOString(),
+    bestStreak: 0,
+    relapses: [],
+    journal: [],
+    why: "",
+    onboardingDone: false,
+    onboarding: {},
+    taskDone: {}
+  };
+}
+let state = loadState();
+function save(){ localStorage.setItem('retention_state_v1', JSON.stringify(state)); }
+
+function currentDay(){
+  const diff = Date.now() - new Date(state.startDate).getTime();
+  return Math.max(0, Math.floor(diff/DAY_MS));
+}
+function rankForDay(d){
+  let r = RANKS[0];
+  for(const item of RANKS){ if(d>=item.day) r=item; else break; }
+  return r;
+}
+function nextRank(d){
+  for(const item of RANKS){ if(item.day>d) return item; }
+  return null;
+}
+function tierIndex(d){
+  let idx=0;
+  RANKS.forEach((r,i)=>{ if(d>=r.day) idx=i; });
+  return idx;
+}
+
+/* =========================================================
+   СИГИЛ
+   ========================================================= */
+function buildSigil(){
+  const d = currentDay();
+  const tier = tierIndex(d);
+  const nodes = Math.min(tier+2, 14);
+  const cx=125, cy=125, R=100, r=64;
+  let points=[];
+  for(let i=0;i<nodes;i++){
+    const ang = (Math.PI*2*i/nodes) - Math.PI/2;
+    points.push([cx+R*Math.cos(ang), cy+R*Math.sin(ang)]);
+  }
+  let lines='';
+  points.forEach((p,i)=>{
+    const n = points[(i+1)%points.length];
+    lines += `<line x1="${p[0]}" y1="${p[1]}" x2="${cx}" y2="${cy}" stroke="url(#g1)" stroke-width="1" opacity="0.55"/>`;
+    lines += `<line x1="${p[0]}" y1="${p[1]}" x2="${n[0]}" y2="${n[1]}" stroke="url(#g1)" stroke-width="1" opacity="0.35"/>`;
+  });
+  let dots = points.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="#D4AF37"/>`).join('');
+
+  const nr = nextRank(d);
+  const prevThreshold = rankForDay(d).day;
+  const nextThreshold = nr ? nr.day : prevThreshold+30;
+  const progress = nr ? Math.min(1,(d-prevThreshold)/(nextThreshold-prevThreshold)) : 1;
+  const circumference = 2*Math.PI*r;
+  const dash = circumference*progress;
+
+  const svg = `
+  <svg viewBox="0 0 250 250">
+    <defs>
+      <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#8B5CF6"/>
+        <stop offset="100%" stop-color="#D4AF37"/>
+      </linearGradient>
+      <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <polygon points="125,25 210,72 210,178 125,225 40,178 40,72" fill="none" stroke="#2A2D38" stroke-width="1.5"/>
+    <g filter="url(#glow)">${lines}${dots}</g>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#2A2D38" stroke-width="4"/>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#8B5CF6" stroke-width="4"
+      stroke-dasharray="${dash} ${circumference}" stroke-linecap="round" transform="rotate(-90 ${cx} ${cy})" filter="url(#glow)"/>
+  </svg>`;
+  document.getElementById('sigilWrap').innerHTML = svg;
+  document.getElementById('sigilWrap').innerHTML += `<div style="position:absolute;display:flex;flex-direction:column;align-items:center;">
+    <div class="sigil-day">${d}</div><div class="sigil-label">${d===1?'день':'дней'}</div></div>`;
+}
+
+/* =========================================================
+   РЕНДЕР ЭКРАНОВ
+   ========================================================= */
+function renderHome(){
+  buildSigil();
+  const d = currentDay();
+  const rank = rankForDay(d);
+  const nr = nextRank(d);
+  document.getElementById('rankName').textContent = rank.name;
+  document.getElementById('rankNext').textContent = nr ? `до ранга «${nr.name}» — ${nr.day-d} дн.` : 'высшая ступень пути';
+  document.getElementById('auraText').textContent = rank.aura;
+
+  const idx = dailyTaskIndex();
+  document.getElementById('taskText').textContent = DAILY_TASKS[idx];
+  const done = !!state.taskDone[todayKey()];
+  document.getElementById('taskCheck').classList.toggle('done', done);
+  document.getElementById('taskText').classList.toggle('done', done);
+}
+function toggleTask(){
+  const key = todayKey();
+  state.taskDone[key] = !state.taskDone[key];
+  save();
+  renderHome();
+}
+let quoteIdx = Math.floor(Math.random()*QUOTES.length);
+function newQuote(){
+  quoteIdx = (quoteIdx+1)%QUOTES.length;
+  document.getElementById('quoteText').textContent = QUOTES[quoteIdx];
+}
+
+function renderJournal(){
+  const list = document.getElementById('journalList');
+  if(state.journal.length===0){ list.innerHTML = '<div class="empty-note">Пока пусто. Первая запись — тоже часть пути.</div>'; return; }
+  list.innerHTML = [...state.journal].reverse().map(e=>{
+    const dt = new Date(e.date);
+    const dateStr = dt.toLocaleDateString('ru-RU',{day:'numeric',month:'short'});
+    return `<div class="j-entry">
+      <button class="j-del" onclick="delJournal(${e.id})">удалить</button>
+      <div class="j-meta">День ${e.day} · ${dateStr}</div>
+      <div class="j-text">${escapeHtml(e.text)}</div>
+    </div>`;
+  }).join('');
+}
+function addJournal(){
+  const inp = document.getElementById('journalInput');
+  const text = inp.value.trim();
+  if(!text) return;
+  state.journal.push({id:Date.now(), date:new Date().toISOString(), day:currentDay(), text});
+  save(); inp.value=''; renderJournal(); renderRanks();
+}
+function delJournal(id){
+  state.journal = state.journal.filter(e=>e.id!==id);
+  save(); renderJournal();
+}
+function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+function renderStats(){
+  const d = currentDay();
+  const best = Math.max(state.bestStreak, d);
+  document.getElementById('statCurrent').textContent = d;
+  document.getElementById('statBest').textContent = best;
+  document.getElementById('statAttempts').textContent = state.relapses.length + 1;
+  const totalPast = state.relapses.reduce((s,r)=>s+r.streakDays,0);
+  document.getElementById('statTotal').textContent = totalPast + d;
+
+  const history = [...state.relapses.map(r=>r.streakDays), d];
+  const last = history.slice(-8);
+  const max = Math.max(...last, 1);
+  document.getElementById('barsWrap').innerHTML = `<div class="bars">` + last.map((v,i)=>{
+    const isCurrent = i===last.length-1;
+    const h = Math.max(4, Math.round((v/max)*90));
+    return `<div class="bar-col"><div class="bar-fill ${isCurrent?'current':''}" style="height:${h}px"></div><div class="bar-tag">${v}</div></div>`;
+  }).join('') + `</div>`;
+
+  const rl = document.getElementById('relapseList');
+  if(state.relapses.length===0){ rl.innerHTML = '<div class="empty-note">Срывов ещё не было. Пусть так и остаётся как можно дольше.</div>'; }
+  else{
+    rl.innerHTML = [...state.relapses].reverse().map(r=>{
+      const dt = new Date(r.date).toLocaleDateString('ru-RU',{day:'numeric',month:'short',year:'numeric'});
+      return `<div class="j-entry"><div class="j-meta">${dt} · держался ${r.streakDays} дн.</div>
+        <div class="j-text">${r.reason? escapeHtml(r.reason) : 'причина не указана'}</div></div>`;
+    }).join('');
+  }
+}
+
+function renderRanks(){
+  const d = currentDay();
+  const best = Math.max(state.bestStreak, d);
+  const wrap = document.getElementById('ranksList');
+  wrap.innerHTML = RANKS.map((r,i)=>{
+    const unlocked = best >= r.day;
+    const isCurrent = rankForDay(d).day === r.day;
+    return `<div class="rank-row ${unlocked?'unlocked':''} ${isCurrent?'current':''}">
+      <div class="rank-icon">${unlocked?'✓':i+1}</div>
+      <div class="rank-info">
+        <div class="r-name">${r.name}</div>
+        <div class="r-day">день ${r.day}+</div>
+        <div class="r-aura">${r.aura}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const badges = [
+    {on: state.journal.length>0, label:"Первая запись"},
+    {on: state.journal.length>=7, label:"7 записей в дневнике"},
+    {on: best>=7, label:"Неделя"},
+    {on: best>=30, label:"Месяц"},
+    {on: best>=100, label:"Легенда · 100 дней"},
+    {on: state.why.trim().length>0, label:"Цель определена"}
+  ];
+  document.getElementById('badgeRow').innerHTML = badges.map(b=>`<div class="badge ${b.on?'on':''}">${b.label}</div>`).join('');
+}
+
+/* =========================================================
+   НАВИГАЦИЯ
+   ========================================================= */
+function switchView(v){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(el=>el.classList.toggle('active', el.dataset.v===v));
+  if(v==='home') renderHome();
+  if(v==='journal') renderJournal();
+  if(v==='stats') renderStats();
+  if(v==='ranks') renderRanks();
+}
+
+/* =========================================================
+   МОДАЛКИ
+   ========================================================= */
+let breathInterval=null;
+function openModal(name){
+  document.getElementById('modal-'+name).classList.add('show');
+  if(name==='panic'){
+    const q = QUOTES[Math.floor(Math.random()*QUOTES.length)];
+    document.getElementById('panicQuote').textContent = q;
+    if(state.why.trim()){
+      document.getElementById('whyBlock').style.display='block';
+      document.getElementById('whyText').textContent = state.why;
+    } else {
+      document.getElementById('whyBlock').style.display='none';
+    }
+    let t=60;
+    document.getElementById('breathTimer').textContent=t;
+    clearInterval(breathInterval);
+    breathInterval = setInterval(()=>{
+      t--; if(t<0) t=60;
+      document.getElementById('breathTimer').textContent=t;
+    },1000);
+  }
+  if(name==='settings'){
+    document.getElementById('whyInput').value = state.why;
+    document.getElementById('startInput').value = new Date(state.startDate).toISOString().slice(0,10);
+  }
+}
+function closeModal(name){
+  document.getElementById('modal-'+name).classList.remove('show');
+  if(name==='panic') clearInterval(breathInterval);
+}
+
+function openRelapseFlow(){
+  closeModal('panic');
+  const d = currentDay();
+  const rank = rankForDay(d);
+  const achieved = RANKS.filter(r=>d>=r.day);
+  document.getElementById('lossList').innerHTML =
+    `<li><span class="x">✕</span><span><b>${d} ${d===1?'день':'дней'}</b> текущего стрика будут обнулены</span></li>` +
+    `<li><span class="x">✕</span><span>Ранг «<b>${rank.name}</b>» и всё, что он давал</span></li>` +
+    achieved.slice(-3).map(r=>`<li><span class="x">✕</span><span>${r.aura}</span></li>`).join('');
+  document.getElementById('reasonInput').value='';
+  openModal('relapse');
+}
+
+function confirmRelapse(){
+  const d = currentDay();
+  const reason = document.getElementById('reasonInput').value.trim();
+  state.relapses.push({date:new Date().toISOString(), streakDays:d, reason});
+  state.bestStreak = Math.max(state.bestStreak, d);
+  state.startDate = new Date().toISOString();
+  save();
+  closeModal('relapse');
+  showToast("Новый отсчёт начался. Ты не проиграл — ты учишься держать удар.");
+  switchView('home');
+}
+
+function saveSettings(){
+  state.why = document.getElementById('whyInput').value.trim();
+  const newStart = document.getElementById('startInput').value;
+  if(newStart) state.startDate = new Date(newStart+'T00:00:00').toISOString();
+  save();
+  closeModal('settings');
+  showToast("Сохранено.");
+  switchView('home');
+}
+function resetAll(){
+  if(confirm('Точно стереть весь прогресс, дневник и историю без возможности отмены?')){
+    localStorage.removeItem('retention_state_v1');
+    state = loadState();
+    closeModal('settings');
+    switchView('home');
+    showToast("Всё сброшено. Чистый лист.");
+  }
+}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(window.__toastT);
+  window.__toastT=setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+/* =========================================================
+   ОНБОРДИНГ (вступительная анкета)
+   ========================================================= */
+let obIndex = 0;
+let obAnswers = {};
+let obSelectedOption = null; // {stepIndex: optionData}
+
+function startOnboarding(replay){
+  obIndex = 0;
+  obAnswers = {};
+  buildOnboardingProgress();
+  renderOnboardingStep();
+  document.getElementById('onboarding-overlay').classList.add('show');
+}
+function buildOnboardingProgress(){
+  const total = ONBOARDING.length + 1; // + финальный экран
+  const wrap = document.getElementById('obProgress');
+  wrap.innerHTML = '';
+  for(let i=0;i<total;i++){
+    const dot = document.createElement('div');
+    dot.className = 'ob-dot';
+    wrap.appendChild(dot);
+  }
+  updateProgressDots();
+}
+function updateProgressDots(){
+  const dots = document.querySelectorAll('.ob-dot');
+  dots.forEach((d,i)=>{
+    d.classList.remove('done','active');
+    if(i<obIndex) d.classList.add('done');
+    else if(i===obIndex) d.classList.add('active');
+  });
+}
+function renderOnboardingStep(){
+  updateProgressDots();
+  const body = document.getElementById('obBody');
+  const nextBtn = document.getElementById('obNextBtn');
+
+  if(obIndex < ONBOARDING.length){
+    const step = ONBOARDING[obIndex];
+    const opts = step.options.map((opt,i)=>{
+      const label = typeof opt === 'string' ? opt : opt.label;
+      return `<button class="ob-option" data-i="${i}" onclick="selectOption(${i})">${label}</button>`;
+    }).join('');
+    body.innerHTML = `<div class="ob-step active">
+      <div class="ob-eyebrow">Вопрос ${obIndex+1} из ${ONBOARDING.length}</div>
+      <div class="ob-question">${step.q}</div>
+      <div class="ob-options">${opts}</div>
+    </div>`;
+    nextBtn.textContent = 'Далее →';
+    nextBtn.style.display = 'block';
+    nextBtn.classList.remove('enabled');
+    document.getElementById('obNav').querySelector('.ob-skip').style.display='block';
+  } else {
+    body.innerHTML = `<div class="ob-step active ob-final">
+      <div class="ob-eyebrow">Наставление</div>
+      <div class="ob-question">Прежде чем начать</div>
+      <div class="ob-final-text">${OB_FINAL_TEXT.replace(/\\n/g,'<br><br>')}</div>
+      <button class="ob-start-btn" onclick="finishOnboarding()">Начать путь</button>
+    </div>`;
+    nextBtn.style.display = 'none';
+    document.getElementById('obNav').querySelector('.ob-skip').style.display='none';
+  }
+}
+function selectOption(i){
+  const step = ONBOARDING[obIndex];
+  document.querySelectorAll('.ob-option').forEach(el=>el.classList.remove('selected'));
+  document.querySelectorAll(`.ob-option[data-i="${i}"]`)[0].classList.add('selected');
+  const opt = step.options[i];
+  obAnswers[step.key] = typeof opt === 'string' ? opt : opt.label;
+  if(step.setsStreak && typeof opt !== 'string'){
+    obAnswers['_streakDays'] = opt.days;
+  }
+  document.getElementById('obNextBtn').classList.add('enabled');
+}
+function obNext(){
+  if(!document.getElementById('obNextBtn').classList.contains('enabled')) return;
+  obIndex++;
+  renderOnboardingStep();
+}
+function skipOnboarding(){
+  finishOnboarding(true);
+}
+function finishOnboarding(skipped){
+  state.onboarding = obAnswers;
+  state.onboardingDone = true;
+  if(!skipped && typeof obAnswers['_streakDays'] === 'number'){
+    const days = obAnswers['_streakDays'];
+    const newStart = new Date(Date.now() - days*DAY_MS);
+    state.startDate = newStart.toISOString();
+  }
+  save();
+  document.getElementById('onboarding-overlay').classList.remove('show');
+  switchView('home');
+  if(!skipped){
+    showToast("Анкета сохранена. Путь начался.");
+  }
+}
+
+/* =========================================================
+   INIT
+   ========================================================= */
+newQuote();
+renderHome();
+if(!state.onboardingDone){
+  startOnboarding(false);
+}
+</script>
+</body>
+</html>
