@@ -1,0 +1,26 @@
+{
+  "background_color": "#0a0b0f",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Путь",
+  "orientation": "portrait",
+  "scope": "/",
+  "short_name": "Путь",
+  "start_url": "/put/",
+  "theme_color": "#0A0B0F",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;polygon points='50,6 90,28 90,72 50,94 10,72 10,28' fill='%230A0B0F' stroke='%238B5CF6' stroke-width='4'/&gt;&lt;circle cx='50' cy='50' r='14' fill='%23D4AF37'/&gt;&lt;/svg&gt;",
+      "isSquare": false,
+      "isPng": false,
+      "isWebp": false,
+      "isJpg": false,
+      "width": 0,
+      "is512x512": false,
+      "is256x256": false,
+      "is192x192": false
+    }
+  ],
+  "description": "Приложение для отслеживания прогресса, дисциплины и личного пути.",
+  "lang": "ru"
+}
