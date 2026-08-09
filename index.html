@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <link rel="manifest (2)" href="manifest (2).json">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <meta name="mobile-web-app-capable" content="yes">
@@ -26,18 +25,36 @@
   --crimson-dim:#7A2620;
   --text:#EDEBE6;
   --text-muted:#8A8D97;
+  --glow1:rgba(139,92,246,0.13);
+  --glow2:rgba(212,175,55,0.06);
   --font-display:'Cinzel',serif;
   --font-body:'Manrope',sans-serif;
   --font-mono:'JetBrains Mono',monospace;
+}
+html[data-theme="light"]{
+  --void:#F3EFE6;
+  --panel:#FFFFFF;
+  --panel-2:#F1ECE1;
+  --line:#DED5C2;
+  --violet:#7C3AED;
+  --violet-dim:#C4B5FD;
+  --gold:#9A6B0C;
+  --crimson:#B91C1C;
+  --crimson-dim:#F3A5A5;
+  --text:#22201B;
+  --text-muted:#726C5E;
+  --glow1:rgba(124,58,237,0.08);
+  --glow2:rgba(154,107,12,0.06);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{margin:0;padding:0;height:100%;background:var(--void);color:var(--text);font-family:var(--font-body);overscroll-behavior:none;}
 body{
   background:
-    radial-gradient(ellipse 600px 400px at 50% -10%, rgba(139,92,246,0.13), transparent 60%),
-    radial-gradient(ellipse 500px 500px at 90% 100%, rgba(212,175,55,0.06), transparent 60%),
+    radial-gradient(ellipse 600px 400px at 50% -10%, var(--glow1), transparent 60%),
+    radial-gradient(ellipse 500px 500px at 90% 100%, var(--glow2), transparent 60%),
     var(--void);
   min-height:100vh;
+  transition:background-color .3s ease;
 }
 #app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding-bottom:78px;}
 ::-webkit-scrollbar{display:none;}
@@ -154,6 +171,18 @@ body{
 .settings-field textarea,.settings-field input{width:100%;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;color:var(--text);font-family:var(--font-body);font-size:13.5px;padding:11px 12px;}
 .danger-btn{margin-top:20px;width:100%;padding:12px;border-radius:10px;border:1px solid var(--crimson-dim);background:transparent;color:var(--crimson);font-size:12.5px;font-weight:600;}
 .settings-link-btn{margin-top:10px;width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--panel-2);color:var(--text);font-size:12.5px;font-weight:600;}
+.toggle-group{display:flex;gap:8px;margin-top:6px;}
+.toggle-pill{flex:1;padding:11px 8px;border-radius:10px;border:1px solid var(--line);background:var(--panel-2);color:var(--text-muted);font-family:var(--font-body);font-size:12.5px;font-weight:700;text-align:center;}
+.toggle-pill.active{border-color:var(--gold);color:var(--gold);background:var(--panel);}
+.mode-note{font-size:11.5px;color:var(--text-muted);margin-top:8px;line-height:1.45;}
+#particleCanvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+.cosmetic-group-label{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;margin:14px 0 8px;}
+.swatch-row{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:4px;}
+.swatch{width:58px;display:flex;flex-direction:column;align-items:center;gap:6px;opacity:.4;}
+.swatch.unlocked{opacity:1;}
+.swatch-dot{width:40px;height:40px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:11px;color:var(--text-muted);background:var(--panel-2);}
+.swatch.active .swatch-dot{border-color:var(--gold);box-shadow:0 0 12px rgba(212,175,55,.4);}
+.swatch-label{font-size:9px;font-family:var(--font-mono);color:var(--text-muted);text-align:center;line-height:1.3;}
 .toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:var(--panel-2);border:1px solid var(--gold);color:var(--text);padding:11px 18px;border-radius:30px;font-size:12.5px;z-index:60;opacity:0;transition:opacity .3s;pointer-events:none;text-align:center;max-width:88%;}
 .toast.show{opacity:1;}
 .badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
@@ -174,10 +203,16 @@ body{
 .ob-question{font-family:var(--font-display);font-size:22px;line-height:1.35;color:var(--text);margin-bottom:26px;}
 .ob-options{display:flex;flex-direction:column;gap:10px;}
 .ob-option{text-align:left;padding:15px 16px;border-radius:12px;background:var(--panel);border:1px solid var(--line);color:var(--text);font-size:14px;font-family:var(--font-body);}
+.ob-option-mode{padding:17px 16px;}
+.ob-option-title{font-family:var(--font-display);font-size:15.5px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.ob-option.selected .ob-option-title{color:var(--gold);}
+.ob-option-desc{font-size:12px;color:var(--text-muted);line-height:1.45;font-weight:400;}
 .ob-option.selected{border-color:var(--gold);background:var(--panel-2);color:var(--gold);}
 .ob-final .ob-question{font-size:19px;}
 .ob-final-text{font-size:14.5px;line-height:1.7;color:var(--text-muted);font-style:italic;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:22px;}
 .ob-nav{display:flex;justify-content:space-between;align-items:center;padding:0 26px 30px;max-width:480px;margin:0 auto;width:100%;padding-bottom:calc(30px + env(safe-area-inset-bottom));}
+.ob-nav-left{display:flex;align-items:center;gap:16px;}
+.ob-back{background:none;border:none;color:var(--text-muted);font-family:var(--font-mono);font-size:11px;letter-spacing:.05em;}
 .ob-skip{background:none;border:none;color:var(--text-muted);font-family:var(--font-mono);font-size:11px;letter-spacing:.05em;}
 .ob-next{padding:13px 26px;border-radius:12px;border:none;background:var(--violet);color:#fff;font-weight:700;font-size:13.5px;opacity:.35;pointer-events:none;}
 .ob-next.enabled{opacity:1;pointer-events:auto;}
@@ -185,6 +220,7 @@ body{
 </style>
 </head>
 <body>
+<canvas id="particleCanvas"></canvas>
 <div id="app">
 
   <div class="topbar">
@@ -230,6 +266,10 @@ body{
         Дневник
       </button>
     </div>
+    <button class="btn btn-violet" id="sexBtn" style="width:100%;margin-top:10px;display:none" onclick="openModal('sex')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-6.7-4.3-9.3-8.2C1 10 1.6 6.4 4.6 4.9c2.4-1.2 4.9-.3 6.4 1.6 1.5-1.9 4-2.8 6.4-1.6 3 1.5 3.6 5.1 1.9 7.9C18.7 16.7 12 21 12 21z"/></svg>
+      Был секс (не сбрасывает стрик)
+    </button>
   </div>
 
   <!-- JOURNAL -->
@@ -255,12 +295,21 @@ body{
     <div id="barsWrap"></div>
     <div class="section-title"><div class="dash"></div>Срывы и причины</div>
     <div id="relapseList"></div>
+    <div class="section-title" id="sexSectionTitle" style="display:none"><div class="dash"></div>Секс без срыва</div>
+    <div id="sexLogList"></div>
   </div>
 
   <!-- RANKS -->
   <div class="view" id="view-ranks">
     <div class="section-title"><div class="dash"></div>Достижения</div>
     <div class="badge-row" id="badgeRow"></div>
+
+    <div class="section-title"><div class="dash"></div>Награды пути</div>
+    <div class="cosmetic-group-label">Искры</div>
+    <div class="swatch-row" id="particleSwatches"></div>
+    <div class="cosmetic-group-label">Свечение фона</div>
+    <div class="swatch-row" id="bgSwatches"></div>
+
     <div class="section-title"><div class="dash"></div>Лестница рангов</div>
     <div id="ranksList"></div>
   </div>
@@ -319,12 +368,44 @@ body{
   </div>
 </div>
 
+<!-- SEX LOG MODAL (только для режима NoFap) -->
+<div class="modal-overlay" id="modal-sex">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('sex')">×</button>
+    <h2>Отметить, что был секс</h2>
+    <div class="sub">Стрик не сбросится. Это просто отметка для статистики — как ты себя чувствуешь после?</div>
+    <div class="ob-options" id="sexFeelingOptions"></div>
+    <div class="modal-btns" style="margin-top:16px">
+      <button class="btn btn-ghost" onclick="closeModal('sex')">Отмена</button>
+      <button class="btn btn-violet" id="sexSaveBtn" onclick="saveSexLog()" style="opacity:.4;pointer-events:none">Сохранить отметку</button>
+    </div>
+  </div>
+</div>
+
 <!-- SETTINGS MODAL -->
 <div class="modal-overlay" id="modal-settings">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('settings')">×</button>
     <h2>Настройки пути</h2>
     <div class="sub">Это хранится только в этом браузере, на этом устройстве.</div>
+
+    <div class="settings-field">
+      <label>Тема оформления</label>
+    </div>
+    <div class="toggle-group">
+      <button class="toggle-pill" id="themePillDark" onclick="setTheme('dark')">Тёмная</button>
+      <button class="toggle-pill" id="themePillLight" onclick="setTheme('light')">Светлая</button>
+    </div>
+
+    <div class="settings-field">
+      <label>Режим пути</label>
+    </div>
+    <div class="toggle-group">
+      <button class="toggle-pill" id="modePillFull" onclick="setMode('full')">Полное воздержание</button>
+      <button class="toggle-pill" id="modePillNofap" onclick="setMode('nofap')">NoFap</button>
+    </div>
+    <div class="mode-note">В режиме NoFap секс с партнёром не считается срывом — для него есть отдельная кнопка на главном экране. Срывом остаются соло-разрядка и порно.</div>
+
     <div class="settings-field">
       <label>Твоя причина ("зачем")</label>
       <textarea id="whyInput" rows="3" placeholder="Например: хочу больше энергии, ясности и уважения к себе"></textarea>
@@ -335,6 +416,14 @@ body{
     </div>
     <button class="btn btn-ghost" style="width:100%;margin-top:16px" onclick="saveSettings()">Сохранить</button>
     <button class="settings-link-btn" onclick="closeModal('settings');startOnboarding(true)">Пройти анкету заново</button>
+
+    <div class="settings-field">
+      <label>Резервная копия · перенос на новый телефон</label>
+    </div>
+    <button class="settings-link-btn" onclick="exportBackup()">Скачать файл резервной копии</button>
+    <button class="settings-link-btn" onclick="document.getElementById('importFile').click()">Восстановить из файла</button>
+    <input type="file" id="importFile" accept=".json,application/json" style="display:none" onchange="importBackup(this.files[0])">
+
     <button class="danger-btn" onclick="resetAll()">Сбросить все данные приложения</button>
   </div>
 </div>
@@ -346,7 +435,10 @@ body{
   <div class="ob-progress" id="obProgress"></div>
   <div class="ob-body" id="obBody"></div>
   <div class="ob-nav" id="obNav">
-    <button class="ob-skip" onclick="skipOnboarding()">Пропустить</button>
+    <div class="ob-nav-left">
+      <button class="ob-back" id="obBackBtn" onclick="obBack()">← Назад</button>
+      <button class="ob-skip" id="obSkipBtn" onclick="skipOnboarding()">Пропустить</button>
+    </div>
     <button class="ob-next" id="obNextBtn" onclick="obNext()">Далее →</button>
   </div>
 </div>
@@ -456,9 +548,19 @@ function dailyTaskIndex(){
 function todayKey(){ return new Date().toDateString(); }
 
 /* ---------- ВСТУПИТЕЛЬНАЯ АНКЕТА ----------
-   Ответы (кроме первого вопроса) пока нигде не используются —
+   Первый шаг задаёт режим пути и реально влияет на приложение.
+   Ответы остальных вопросов пока нигде не используются —
    просто сохраняются в state.onboarding для будущих доработок. */
 const ONBOARDING = [
+  {
+    type:"mode",
+    q:"Выбери свой режим пути",
+    key:"mode",
+    options:[
+      {id:"full",  label:"Полное воздержание",  desc:"Semen retention. Любая разрядка — соло, с партнёром, любая — считается срывом."},
+      {id:"nofap", label:"NoFap",                desc:"Секс с партнёром не считается срывом. Срывом остаются соло-разрядка и порно."}
+    ]
+  },
   {
     q:"Сколько дней ты уже воздерживаешься?",
     key:"streak_start",
@@ -520,6 +622,29 @@ const ONBOARDING = [
 ];
 const OB_FINAL_TEXT = "Путь, который ты выбрал — не про запрет. Он про то, кем ты становишься день за днём.\n\nТело — не враг. Это инструмент, который либо служит тебе, либо управляет тобой. Каждый день — это голос, который ты подаёшь за одну из этих версий себя.\n\nСчитай не дни воздержания. Считай дни, в которые ты сдержал слово перед собой.\n\nДальше — твой путь.";
 
+/* ---------- ВАРИАНТЫ САМОЧУВСТВИЯ ПОСЛЕ СЕКСА (режим NoFap) ---------- */
+const SEX_FEELINGS = [
+  "Энергия сохранилась, чувствую себя нормально",
+  "Лёгкая усталость, но в целом хорошо",
+  "Опустошение, упадок сил",
+  "Чувствую вину или сожаление",
+  "Сложно сказать / нейтрально"
+];
+
+/* ---------- НАГРАДЫ ПУТИ ----------
+   Разблокируются навсегда по лучшему стрику (как ранги/бейджи).
+   type:'particles' — плавающие искры на фоне всего приложения.
+   type:'bg'        — оттенок мистического свечения фона. */
+const COSMETIC_REWARDS = [
+  {id:'particles_violet', type:'particles', day:3,  color:'#8B5CF6', direction:'down', label:'Фиолетовые искры'},
+  {id:'bg_teal',          type:'bg',        day:7,  glow1:'rgba(45,212,191,0.14)', glow2:'rgba(45,140,191,0.06)', swatch:'#2DD4BF', label:'Глубокий отблеск'},
+  {id:'particles_gold',   type:'particles', day:9,  color:'#D4AF37', direction:'up',   label:'Золотые искры'},
+  {id:'bg_violet',        type:'bg',        day:14, glow1:'rgba(139,92,246,0.22)', glow2:'rgba(91,63,160,0.10)', swatch:'#8B5CF6', label:'Глубокий фиолет'},
+  {id:'particles_orange', type:'particles', day:20, color:'#F97316', direction:'up',   label:'Оранжевые искры'},
+  {id:'particles_red',    type:'particles', day:25, color:'#DC2626', direction:'up',   label:'Алые искры'},
+  {id:'bg_royal',         type:'bg',        day:30, glow1:'rgba(212,175,55,0.20)', glow2:'rgba(139,92,246,0.12)', swatch:'#D4AF37', label:'Королевское сияние'}
+];
+
 const DAY_MS = 86400000;
 
 /* =========================================================
@@ -527,7 +652,14 @@ const DAY_MS = 86400000;
    ========================================================= */
 function loadState(){
   let s = localStorage.getItem('retention_state_v1');
-  if(s){ return JSON.parse(s); }
+  if(s){
+    const parsed = JSON.parse(s);
+    if(parsed.theme === undefined) parsed.theme = 'dark';
+    if(parsed.mode === undefined) parsed.mode = 'full';
+    if(parsed.sexLog === undefined) parsed.sexLog = [];
+    if(parsed.cosmetics === undefined) parsed.cosmetics = {particles:null, bg:null};
+    return parsed;
+  }
   return {
     startDate: new Date().toISOString(),
     bestStreak: 0,
@@ -536,15 +668,123 @@ function loadState(){
     why: "",
     onboardingDone: false,
     onboarding: {},
-    taskDone: {}
+    taskDone: {},
+    theme: "dark",
+    mode: "full",
+    sexLog: [],
+    cosmetics: {particles:null, bg:null}
   };
 }
 let state = loadState();
 function save(){ localStorage.setItem('retention_state_v1', JSON.stringify(state)); }
+function applyTheme(){
+  document.documentElement.setAttribute('data-theme', state.theme === 'light' ? 'light' : 'dark');
+}
+function bestStreakEver(){
+  return Math.max(state.bestStreak, currentDay());
+}
+function applyCosmetics(){
+  const pReward = state.cosmetics.particles ? COSMETIC_REWARDS.find(r=>r.id===state.cosmetics.particles) : null;
+  if(pReward){ spawnParticles(pReward.color, pReward.direction); }
+  else { activeParticleColor = null; particleList = []; }
 
-function currentDay(){
+  const bReward = state.cosmetics.bg ? COSMETIC_REWARDS.find(r=>r.id===state.cosmetics.bg) : null;
+  if(bReward){
+    document.documentElement.style.setProperty('--glow1', bReward.glow1);
+    document.documentElement.style.setProperty('--glow2', bReward.glow2);
+  } else {
+    document.documentElement.style.removeProperty('--glow1');
+    document.documentElement.style.removeProperty('--glow2');
+  }
+}
+function setParticles(id){
+  if(id){
+    const reward = COSMETIC_REWARDS.find(r=>r.id===id && r.type==='particles');
+    if(!reward || bestStreakEver() < reward.day) return;
+  }
+  state.cosmetics.particles = id;
+  save();
+  applyCosmetics();
+  renderRanks();
+}
+function setBgTint(id){
+  if(id){
+    const reward = COSMETIC_REWARDS.find(r=>r.id===id && r.type==='bg');
+    if(!reward || bestStreakEver() < reward.day) return;
+  }
+  state.cosmetics.bg = id;
+  save();
+  applyCosmetics();
+  renderRanks();
+}
+
+/* ---------- ЧАСТИЦЫ (искры) — лёгкий canvas-движок ---------- */
+let particleCtx = null;
+let particleList = [];
+let activeParticleColor = null;
+let activeParticleDirection = 'up';
+function getParticleCanvas(){ return document.getElementById('particleCanvas'); }
+function resizeParticleCanvas(){
+  const c = getParticleCanvas();
+  c.width = window.innerWidth;
+  c.height = window.innerHeight;
+}
+function spawnParticles(color, direction){
+  activeParticleColor = color;
+  activeParticleDirection = direction;
+  const c = getParticleCanvas();
+  particleList = [];
+  const count = 22;
+  for(let i=0;i<count;i++){
+    particleList.push({
+      x: Math.random()*c.width,
+      y: Math.random()*c.height,
+      r: 1 + Math.random()*2,
+      speed: 0.12 + Math.random()*0.28,
+      drift: (Math.random()-0.5)*0.25,
+      alpha: 0.12 + Math.random()*0.3
+    });
+  }
+}
+function hexToRgba(hex, alpha){
+  const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+function tickParticles(){
+  const c = getParticleCanvas();
+  if(!particleCtx) particleCtx = c.getContext('2d');
+  particleCtx.clearRect(0,0,c.width,c.height);
+  if(activeParticleColor){
+    particleList.forEach(p=>{
+      p.y += activeParticleDirection==='up' ? -p.speed : p.speed;
+      p.x += p.drift;
+      if(activeParticleDirection==='up' && p.y < -10){ p.y = c.height+10; p.x = Math.random()*c.width; }
+      if(activeParticleDirection==='down' && p.y > c.height+10){ p.y = -10; p.x = Math.random()*c.width; }
+      particleCtx.beginPath();
+      particleCtx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      particleCtx.fillStyle = hexToRgba(activeParticleColor, p.alpha);
+      particleCtx.fill();
+    });
+  }
+  requestAnimationFrame(tickParticles);
+}
+
+function currentDayPrecise(){
   const diff = Date.now() - new Date(state.startDate).getTime();
-  return Math.max(0, Math.floor(diff/DAY_MS));
+  return Math.max(0, diff/DAY_MS);
+}
+function currentDay(){
+  return Math.floor(currentDayPrecise());
+}
+function elapsedParts(){
+  const totalMs = Math.max(0, Date.now() - new Date(state.startDate).getTime());
+  const totalSec = Math.floor(totalMs/1000);
+  const days = Math.floor(totalSec/86400);
+  const hours = Math.floor((totalSec%86400)/3600);
+  const minutes = Math.floor((totalSec%3600)/60);
+  const seconds = totalSec%60;
+  const pad = n => String(n).padStart(2,'0');
+  return {days, hours, minutes, seconds, clock:`${pad(hours)}:${pad(minutes)}:${pad(seconds)}`};
 }
 function rankForDay(d){
   let r = RANKS[0];
@@ -565,7 +805,8 @@ function tierIndex(d){
    СИГИЛ
    ========================================================= */
 function buildSigil(){
-  const d = currentDay();
+  const dPrecise = currentDayPrecise();
+  const d = Math.floor(dPrecise);
   const tier = tierIndex(d);
   const nodes = Math.min(tier+2, 14);
   const cx=125, cy=125, R=100, r=64;
@@ -585,7 +826,7 @@ function buildSigil(){
   const nr = nextRank(d);
   const prevThreshold = rankForDay(d).day;
   const nextThreshold = nr ? nr.day : prevThreshold+30;
-  const progress = nr ? Math.min(1,(d-prevThreshold)/(nextThreshold-prevThreshold)) : 1;
+  const progress = nr ? Math.min(1,(dPrecise-prevThreshold)/(nextThreshold-prevThreshold)) : 1;
   const circumference = 2*Math.PI*r;
   const dash = circumference*progress;
 
@@ -598,16 +839,31 @@ function buildSigil(){
       </linearGradient>
       <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
     </defs>
-    <polygon points="125,25 210,72 210,178 125,225 40,178 40,72" fill="none" stroke="#2A2D38" stroke-width="1.5"/>
+    <polygon points="125,25 210,72 210,178 125,225 40,178 40,72" fill="none" style="stroke:var(--line)" stroke-width="1.5"/>
     <g filter="url(#glow)">${lines}${dots}</g>
-    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#2A2D38" stroke-width="4"/>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" style="stroke:var(--line)" stroke-width="4"/>
     <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#8B5CF6" stroke-width="4"
       stroke-dasharray="${dash} ${circumference}" stroke-linecap="round" transform="rotate(-90 ${cx} ${cy})" filter="url(#glow)"/>
   </svg>`;
+  const ep = elapsedParts();
   document.getElementById('sigilWrap').innerHTML = svg;
   document.getElementById('sigilWrap').innerHTML += `<div style="position:absolute;display:flex;flex-direction:column;align-items:center;">
-    <div class="sigil-day">${d}</div><div class="sigil-label">${d===1?'день':'дней'}</div></div>`;
+    <div class="sigil-day">${d}</div><div class="sigil-label">${d===1?'день':'дней'} · ${ep.clock}</div></div>`;
 }
+
+/* Живое обновление: кольцо и счётчик тикают сами, без перезахода в приложение */
+let liveTimer = null;
+function startLiveTimer(){
+  if(liveTimer) clearInterval(liveTimer);
+  liveTimer = setInterval(()=>{
+    if(!document.hidden && document.getElementById('view-home').classList.contains('active')){
+      buildSigil();
+    }
+  }, 1000);
+}
+document.addEventListener('visibilitychange', ()=>{
+  if(!document.hidden){ buildSigil(); }
+});
 
 /* =========================================================
    РЕНДЕР ЭКРАНОВ
@@ -626,6 +882,8 @@ function renderHome(){
   const done = !!state.taskDone[todayKey()];
   document.getElementById('taskCheck').classList.toggle('done', done);
   document.getElementById('taskText').classList.toggle('done', done);
+
+  document.getElementById('sexBtn').style.display = state.mode === 'nofap' ? 'flex' : 'none';
 }
 function toggleTask(){
   const key = todayKey();
@@ -692,6 +950,24 @@ function renderStats(){
         <div class="j-text">${r.reason? escapeHtml(r.reason) : 'причина не указана'}</div></div>`;
     }).join('');
   }
+
+  const sexTitle = document.getElementById('sexSectionTitle');
+  const sexList = document.getElementById('sexLogList');
+  if(state.mode === 'nofap' || state.sexLog.length>0){
+    sexTitle.style.display = 'flex';
+    if(state.sexLog.length===0){
+      sexList.innerHTML = '<div class="empty-note">Пока ничего не отмечено.</div>';
+    } else {
+      sexList.innerHTML = [...state.sexLog].reverse().map(s=>{
+        const dt = new Date(s.date).toLocaleDateString('ru-RU',{day:'numeric',month:'short',year:'numeric'});
+        return `<div class="j-entry"><div class="j-meta">${dt} · день ${s.day} · стрик не сброшен</div>
+          <div class="j-text">${escapeHtml(s.feeling)}</div></div>`;
+      }).join('');
+    }
+  } else {
+    sexTitle.style.display = 'none';
+    sexList.innerHTML = '';
+  }
 }
 
 function renderRanks(){
@@ -720,6 +996,41 @@ function renderRanks(){
     {on: state.why.trim().length>0, label:"Цель определена"}
   ];
   document.getElementById('badgeRow').innerHTML = badges.map(b=>`<div class="badge ${b.on?'on':''}">${b.label}</div>`).join('');
+
+  renderCosmetics(best);
+}
+
+function renderCosmetics(best){
+  const particleRewards = COSMETIC_REWARDS.filter(r=>r.type==='particles');
+  const bgRewards = COSMETIC_REWARDS.filter(r=>r.type==='bg');
+
+  const offParticle = `<div class="swatch unlocked ${!state.cosmetics.particles?'active':''}" onclick="setParticles(null)">
+      <div class="swatch-dot">—</div>
+      <div class="swatch-label">Выкл</div>
+    </div>`;
+  document.getElementById('particleSwatches').innerHTML = offParticle + particleRewards.map(r=>{
+    const unlocked = best>=r.day;
+    const active = state.cosmetics.particles===r.id;
+    const dotStyle = unlocked ? `background:${r.color};border-color:${r.color}` : '';
+    return `<div class="swatch ${unlocked?'unlocked':''} ${active?'active':''}" ${unlocked?`onclick="setParticles('${r.id}')"`:''}>
+      <div class="swatch-dot" style="${dotStyle}">${unlocked?'':'д.'+r.day}</div>
+      <div class="swatch-label">${unlocked?r.label:'день '+r.day}</div>
+    </div>`;
+  }).join('');
+
+  const offBg = `<div class="swatch unlocked ${!state.cosmetics.bg?'active':''}" onclick="setBgTint(null)">
+      <div class="swatch-dot">—</div>
+      <div class="swatch-label">Выкл</div>
+    </div>`;
+  document.getElementById('bgSwatches').innerHTML = offBg + bgRewards.map(r=>{
+    const unlocked = best>=r.day;
+    const active = state.cosmetics.bg===r.id;
+    const dotStyle = unlocked ? `background:${r.swatch};border-color:${r.swatch}` : '';
+    return `<div class="swatch ${unlocked?'unlocked':''} ${active?'active':''}" ${unlocked?`onclick="setBgTint('${r.id}')"`:''}>
+      <div class="swatch-dot" style="${dotStyle}">${unlocked?'':'д.'+r.day}</div>
+      <div class="swatch-label">${unlocked?r.label:'день '+r.day}</div>
+    </div>`;
+  }).join('');
 }
 
 /* =========================================================
@@ -761,7 +1072,35 @@ function openModal(name){
   if(name==='settings'){
     document.getElementById('whyInput').value = state.why;
     document.getElementById('startInput').value = new Date(state.startDate).toISOString().slice(0,10);
+    updateSettingsPillsUI();
   }
+  if(name==='sex'){
+    sexSelectedFeeling = null;
+    document.getElementById('sexFeelingOptions').innerHTML = SEX_FEELINGS.map((f,i)=>
+      `<button class="ob-option" data-i="${i}" onclick="selectSexFeeling(${i})">${f}</button>`
+    ).join('');
+    const btn = document.getElementById('sexSaveBtn');
+    btn.style.opacity = '.4';
+    btn.style.pointerEvents = 'none';
+  }
+}
+function updateSettingsPillsUI(){
+  document.getElementById('themePillDark').classList.toggle('active', state.theme!=='light');
+  document.getElementById('themePillLight').classList.toggle('active', state.theme==='light');
+  document.getElementById('modePillFull').classList.toggle('active', state.mode!=='nofap');
+  document.getElementById('modePillNofap').classList.toggle('active', state.mode==='nofap');
+}
+function setTheme(t){
+  state.theme = t;
+  save();
+  applyTheme();
+  updateSettingsPillsUI();
+}
+function setMode(m){
+  state.mode = m;
+  save();
+  updateSettingsPillsUI();
+  renderHome();
 }
 function closeModal(name){
   document.getElementById('modal-'+name).classList.remove('show');
@@ -793,6 +1132,25 @@ function confirmRelapse(){
   switchView('home');
 }
 
+/* ---------- ЛОГ СЕКСА (режим NoFap) — стрик НЕ сбрасывается ---------- */
+let sexSelectedFeeling = null;
+function selectSexFeeling(i){
+  sexSelectedFeeling = SEX_FEELINGS[i];
+  document.querySelectorAll('#sexFeelingOptions .ob-option').forEach(el=>el.classList.remove('selected'));
+  document.querySelectorAll(`#sexFeelingOptions .ob-option[data-i="${i}"]`)[0].classList.add('selected');
+  const btn = document.getElementById('sexSaveBtn');
+  btn.style.opacity = '1';
+  btn.style.pointerEvents = 'auto';
+}
+function saveSexLog(){
+  if(!sexSelectedFeeling) return;
+  state.sexLog.push({date:new Date().toISOString(), day:currentDay(), feeling:sexSelectedFeeling});
+  save();
+  closeModal('sex');
+  showToast("Отмечено. Стрик не сброшен — путь продолжается.");
+  renderStats();
+}
+
 function saveSettings(){
   state.why = document.getElementById('whyInput').value.trim();
   const newStart = document.getElementById('startInput').value;
@@ -811,6 +1169,68 @@ function resetAll(){
     showToast("Всё сброшено. Чистый лист.");
   }
 }
+
+/* ---------- РЕЗЕРВНАЯ КОПИЯ: перенос прогресса между телефонами ---------- */
+function exportBackup(){
+  const payload = {
+    app:"put-retention-backup",
+    version:1,
+    exportedAt:new Date().toISOString(),
+    data:state
+  };
+  const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const dateTag = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = `put-backup-${dateTag}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url), 2000);
+  showToast("Файл сохранён. Перекинь его на новый телефон.");
+}
+function importBackup(file){
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (e)=>{
+    let parsed;
+    try{ parsed = JSON.parse(e.target.result); }
+    catch(err){ showToast("Файл повреждён или это не резервная копия."); return; }
+    const incoming = parsed && parsed.data ? parsed.data : parsed;
+    if(!incoming || !incoming.startDate){
+      showToast("Это не похоже на файл резервной копии Пути.");
+      return;
+    }
+    if(!confirm('Заменить текущий прогресс данными из файла? Текущие данные на этом телефоне будут перезаписаны.')) return;
+    state = {
+      startDate: incoming.startDate,
+      bestStreak: incoming.bestStreak || 0,
+      relapses: incoming.relapses || [],
+      journal: incoming.journal || [],
+      why: incoming.why || "",
+      onboardingDone: incoming.onboardingDone !== undefined ? incoming.onboardingDone : true,
+      onboarding: incoming.onboarding || {},
+      taskDone: incoming.taskDone || {},
+      theme: incoming.theme || "dark",
+      mode: incoming.mode || "full",
+      sexLog: incoming.sexLog || [],
+      cosmetics: incoming.cosmetics || {particles:null, bg:null}
+    };
+    save();
+    applyTheme();
+    applyCosmetics();
+    closeModal('settings');
+    switchView('home');
+    renderJournal();
+    renderStats();
+    renderRanks();
+    showToast("Прогресс восстановлен из резервной копии.");
+  };
+  reader.readAsText(file);
+  document.getElementById('importFile').value = '';
+}
+
 function showToast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg; t.classList.add('show');
@@ -823,11 +1243,12 @@ function showToast(msg){
    ========================================================= */
 let obIndex = 0;
 let obAnswers = {};
-let obSelectedOption = null; // {stepIndex: optionData}
+let obSelectedIndexByStep = {};
 
 function startOnboarding(replay){
   obIndex = 0;
   obAnswers = {};
+  obSelectedIndexByStep = {};
   buildOnboardingProgress();
   renderOnboardingStep();
   document.getElementById('onboarding-overlay').classList.add('show');
@@ -855,22 +1276,37 @@ function renderOnboardingStep(){
   updateProgressDots();
   const body = document.getElementById('obBody');
   const nextBtn = document.getElementById('obNextBtn');
+  const backBtn = document.getElementById('obBackBtn');
+  const skipBtn = document.getElementById('obSkipBtn');
+
+  backBtn.style.visibility = obIndex>0 ? 'visible' : 'hidden';
 
   if(obIndex < ONBOARDING.length){
     const step = ONBOARDING[obIndex];
-    const opts = step.options.map((opt,i)=>{
-      const label = typeof opt === 'string' ? opt : opt.label;
-      return `<button class="ob-option" data-i="${i}" onclick="selectOption(${i})">${label}</button>`;
-    }).join('');
+    const chosenIdx = obSelectedIndexByStep[obIndex];
+    let opts;
+    if(step.type === 'mode'){
+      opts = step.options.map((opt,i)=>
+        `<button class="ob-option ob-option-mode ${chosenIdx===i?'selected':''}" data-i="${i}" onclick="selectOption(${i})">
+          <div class="ob-option-title">${opt.label}</div>
+          <div class="ob-option-desc">${opt.desc}</div>
+        </button>`
+      ).join('');
+    } else {
+      opts = step.options.map((opt,i)=>{
+        const label = typeof opt === 'string' ? opt : opt.label;
+        return `<button class="ob-option ${chosenIdx===i?'selected':''}" data-i="${i}" onclick="selectOption(${i})">${label}</button>`;
+      }).join('');
+    }
     body.innerHTML = `<div class="ob-step active">
-      <div class="ob-eyebrow">Вопрос ${obIndex+1} из ${ONBOARDING.length}</div>
+      <div class="ob-eyebrow">Шаг ${obIndex+1} из ${ONBOARDING.length}</div>
       <div class="ob-question">${step.q}</div>
       <div class="ob-options">${opts}</div>
     </div>`;
     nextBtn.textContent = 'Далее →';
     nextBtn.style.display = 'block';
-    nextBtn.classList.remove('enabled');
-    document.getElementById('obNav').querySelector('.ob-skip').style.display='block';
+    nextBtn.classList.toggle('enabled', chosenIdx !== undefined);
+    skipBtn.style.display='block';
   } else {
     body.innerHTML = `<div class="ob-step active ob-final">
       <div class="ob-eyebrow">Наставление</div>
@@ -879,19 +1315,29 @@ function renderOnboardingStep(){
       <button class="ob-start-btn" onclick="finishOnboarding()">Начать путь</button>
     </div>`;
     nextBtn.style.display = 'none';
-    document.getElementById('obNav').querySelector('.ob-skip').style.display='none';
+    skipBtn.style.display='none';
   }
 }
 function selectOption(i){
   const step = ONBOARDING[obIndex];
   document.querySelectorAll('.ob-option').forEach(el=>el.classList.remove('selected'));
   document.querySelectorAll(`.ob-option[data-i="${i}"]`)[0].classList.add('selected');
+  obSelectedIndexByStep[obIndex] = i;
   const opt = step.options[i];
-  obAnswers[step.key] = typeof opt === 'string' ? opt : opt.label;
-  if(step.setsStreak && typeof opt !== 'string'){
-    obAnswers['_streakDays'] = opt.days;
+  if(step.type === 'mode'){
+    obAnswers['mode'] = opt.id;
+  } else {
+    obAnswers[step.key] = typeof opt === 'string' ? opt : opt.label;
+    if(step.setsStreak && typeof opt !== 'string'){
+      obAnswers['_streakDays'] = opt.days;
+    }
   }
   document.getElementById('obNextBtn').classList.add('enabled');
+}
+function obBack(){
+  if(obIndex<=0) return;
+  obIndex--;
+  renderOnboardingStep();
 }
 function obNext(){
   if(!document.getElementById('obNextBtn').classList.contains('enabled')) return;
@@ -904,6 +1350,9 @@ function skipOnboarding(){
 function finishOnboarding(skipped){
   state.onboarding = obAnswers;
   state.onboardingDone = true;
+  if(!skipped && (obAnswers['mode']==='full' || obAnswers['mode']==='nofap')){
+    state.mode = obAnswers['mode'];
+  }
   if(!skipped && typeof obAnswers['_streakDays'] === 'number'){
     const days = obAnswers['_streakDays'];
     const newStart = new Date(Date.now() - days*DAY_MS);
@@ -920,8 +1369,14 @@ function finishOnboarding(skipped){
 /* =========================================================
    INIT
    ========================================================= */
+applyTheme();
+resizeParticleCanvas();
+window.addEventListener('resize', resizeParticleCanvas);
+requestAnimationFrame(tickParticles);
+applyCosmetics();
 newQuote();
 renderHome();
+startLiveTimer();
 if(!state.onboardingDone){
   startOnboarding(false);
 }
