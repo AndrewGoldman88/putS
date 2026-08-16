@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <link rel="manifest" href="manifest (2).json">
+   <link rel="manifest" href="manifest (2).json">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <meta name="mobile-web-app-capable" content="yes">
@@ -32,20 +32,20 @@
   --font-body:'Manrope',sans-serif;
   --font-mono:'JetBrains Mono',monospace;
 }
-html[data-theme="light"]{
-  --void:#F3EFE6;
-  --panel:#FFFFFF;
-  --panel-2:#F1ECE1;
-  --line:#DED5C2;
-  --violet:#7C3AED;
-  --violet-dim:#C4B5FD;
-  --gold:#9A6B0C;
-  --crimson:#B91C1C;
-  --crimson-dim:#F3A5A5;
-  --text:#22201B;
-  --text-muted:#726C5E;
-  --glow1:rgba(124,58,237,0.08);
-  --glow2:rgba(154,107,12,0.06);
+html[data-theme="matrix"]{
+  --void:#000000;
+  --panel:#050a05;
+  --panel-2:#0a140a;
+  --line:#112211;
+  --violet:#00ff41;
+  --violet-dim:#008f11;
+  --gold:#00cc36;
+  --crimson:#ff2b2b;
+  --crimson-dim:#8b0000;
+  --text:#e0ffe0;
+  --text-muted:#5a8c5a;
+  --glow1:rgba(0,255,65,0.12);
+  --glow2:rgba(0,204,54,0.06);
 }
 html[data-theme="blue"]{
   --void:#0B1120;
@@ -250,10 +250,76 @@ body{
 .ob-next{padding:13px 26px;border-radius:12px;border:none;background:var(--violet);color:#fff;font-weight:700;font-size:13.5px;opacity:.35;pointer-events:none;}
 .ob-next.enabled{opacity:1;pointer-events:auto;}
 .ob-start-btn{width:100%;padding:15px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--gold),#8a6d1f);color:#0A0B0F;font-weight:800;font-size:14.5px;}
+
+/* ===== WHEEL OF FORTUNE ===== */
+.wheel-overlay{position:fixed;inset:0;background:rgba(6,7,10,.93);backdrop-filter:blur(8px);z-index:100;display:none;align-items:center;justify-content:center;flex-direction:column;opacity:0;transition:opacity .35s ease;}
+.wheel-overlay.show{display:flex;opacity:1;}
+.wheel-box{position:relative;width:310px;height:310px;margin:18px auto;}
+.wheel-svg{width:100%;height:100%;overflow:visible;transition:transform 5s cubic-bezier(0.19,1,0.22,1);filter:drop-shadow(0 0 24px var(--glow1));}
+.wheel-pointer{position:absolute;top:-16px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-top:28px solid var(--gold);filter:drop-shadow(0 0 10px var(--gold));z-index:10;}
+.wheel-center-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:86px;height:86px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--violet-dim));border:4px solid var(--panel);color:var(--void);font-family:var(--font-display);font-weight:900;font-size:12px;letter-spacing:.08em;cursor:pointer;z-index:10;box-shadow:0 6px 28px rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.25;}
+.wheel-center-btn:disabled{opacity:.45;cursor:not-allowed;}
+.wheel-center-btn:active{transform:translate(-50%,-50%) scale(.94);}
+.wheel-label{font-family:var(--font-mono);font-size:5.5px;letter-spacing:.04em;fill:rgba(255,255,255,.92);text-anchor:middle;dominant-baseline:middle;pointer-events:none;font-weight:800;text-shadow:0 0 3px rgba(0,0,0,.8);}
+.day-progress-ring circle{stroke:var(--violet);}
+.wheel-title{font-family:var(--font-display);font-size:24px;color:var(--gold);text-align:center;margin-bottom:6px;letter-spacing:.04em;}
+.wheel-sub{font-size:12.5px;color:var(--text-muted);text-align:center;margin-bottom:18px;padding:0 20px;}
+.wheel-result{display:none;animation:fadeIn .45s ease;text-align:center;max-width:360px;padding:0 22px;width:100%;}
+.wheel-result-card{background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--line);border-radius:18px;padding:22px;margin:14px 0;position:relative;overflow:hidden;text-align:left;}
+.wheel-result-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold);}
+.wheel-result-type{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;margin-bottom:6px;}
+.wheel-result-text{font-size:17px;line-height:1.45;color:var(--text);font-weight:800;margin-bottom:10px;}
+.wheel-result-desc{font-size:13.5px;line-height:1.55;color:var(--text-muted);font-style:italic;}
+.wheel-claim-btn{width:100%;padding:15px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--gold),var(--violet-dim));color:var(--void);font-family:var(--font-body);font-weight:800;font-size:14.5px;margin-top:12px;letter-spacing:.02em;}
+.wheel-claim-btn:active{transform:scale(.96);}
+.wheel-close{position:absolute;top:18px;right:22px;background:none;border:none;color:var(--text-muted);font-size:30px;line-height:1;cursor:pointer;z-index:20;}
+#matrixRainCanvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;opacity:0;transition:opacity .6s ease;}
+#matrixRainCanvas.active{opacity:1;}
+
+/* ===== WHEEL TASK CARD (HOME) ===== */
+.wheel-task-card{margin-top:12px;background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--line);border-radius:16px;padding:16px 18px;position:relative;overflow:hidden;display:none;}
+.wheel-task-card.show{display:block;animation:fadeIn .35s ease;}
+.wheel-task-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--crimson);}
+.wheel-task-card.done::before{background:var(--gold);}
+.wheel-task-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.wheel-task-type{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--crimson);text-transform:uppercase;}
+.wheel-task-card.done .wheel-task-type{color:var(--gold);}
+.wheel-task-text{font-size:15.5px;line-height:1.45;color:var(--text);font-weight:800;margin-bottom:8px;}
+.wheel-task-desc{font-size:13px;line-height:1.55;color:var(--text-muted);font-style:italic;margin-bottom:14px;}
+.wheel-task-actions{display:flex;gap:10px;}
+.wheel-task-btn{flex:1;padding:12px;border-radius:10px;border:none;font-family:var(--font-body);font-weight:700;font-size:13px;transition:transform .12s ease;}
+.wheel-task-btn.do{background:linear-gradient(135deg,var(--crimson),var(--crimson-dim));color:#fff;}
+.wheel-task-btn.done{background:linear-gradient(135deg,var(--gold),#8a6d1f);color:var(--void);}
+.wheel-task-card.done .wheel-task-text{color:var(--text-muted);text-decoration:line-through;}
+.view {
+  display: none;
+  padding: 8px 20px 20px;
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  will-change: opacity, transform;
+}
+.view.active {
+  display: block;
+  opacity: 1;
+  transform: translateX(0);
+  animation: none;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.view.slide-left {
+  transform: translateX(-30px);
+}
+.view.slide-right {
+  transform: translateX(30px);
+}
 </style>
 </head>
 <body>
 <canvas id="particleCanvas"></canvas>
+<canvas id="matrixRainCanvas"></canvas>
 <div id="app">
 
   <div class="topbar">
@@ -266,7 +332,12 @@ body{
   <!-- HOME -->
   <div class="view active" id="view-home">
     <div class="hero">
-      <div class="sigil-wrap" id="sigilWrap"></div>
+      <div class="sigil-wrap" id="sigilWrap">
+  <svg class="day-progress-ring" viewBox="0 0 250 250" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;">
+    <circle cx="125" cy="125" r="118" fill="none" stroke="var(--line)" stroke-width="3" opacity="0.25"/>
+    <circle id="dayProgressRing" cx="125" cy="125" r="118" fill="none" stroke="var(--violet)" stroke-width="3" stroke-linecap="round" stroke-dasharray="741" stroke-dashoffset="741" transform="rotate(-90 125 125)" style="transition:stroke-dashoffset 1s ease;filter:drop-shadow(0 0 6px var(--glow1));"/>
+  </svg>
+</div>
       <div class="day-display">
         <div class="day-num" id="dayNum">0</div>
         <div class="day-sub" id="daySub">—</div>
@@ -285,6 +356,18 @@ body{
       <div class="task-body">
         <div class="aura-label" style="color:var(--gold)">Задание дня</div>
         <div class="task-text" id="taskText">—</div>
+      </div>
+    </div>
+
+    <!-- WHEEL CHALLENGE CARD -->
+    <div class="wheel-task-card" id="wheelTaskCard">
+      <div class="wheel-task-header">
+        <div class="wheel-task-type" id="wheelTaskType">ВЫЗОВ ДНЯ</div>
+      </div>
+      <div class="wheel-task-text" id="wheelTaskText">—</div>
+      <div class="wheel-task-desc" id="wheelTaskDesc">—</div>
+      <div class="wheel-task-actions" id="wheelTaskActions">
+        <button class="wheel-task-btn do" id="wheelTaskBtn" onclick="completeWheelTask()">Выполнил</button>
       </div>
     </div>
 
@@ -359,6 +442,8 @@ body{
     <div class="swatch-row" id="particleSwatches"></div>
     <div class="cosmetic-group-label">Свечение фона</div>
     <div class="swatch-row" id="bgSwatches"></div>
+    <div class="cosmetic-group-label">Матричный дождь</div>
+    <div class="swatch-row" id="matrixRainSwatches"></div>
 
     <div class="section-title"><div class="dash"></div>Лестница рангов</div>
     <div id="ranksList"></div>
@@ -445,7 +530,7 @@ body{
     </div>
     <<div class="toggle-group">
   <button class="toggle-pill" id="themePillDark" onclick="setTheme('dark')">Тёмная</button>
-  <button class="toggle-pill" id="themePillLight" onclick="setTheme('light')">Светлая</button>
+  <button class="toggle-pill" id="themePillMatrix" onclick="setTheme('matrix')">Матрица</button>
   <button class="toggle-pill" id="themePillBlue" onclick="setTheme('blue')">Синяя</button>
 </div>
 
@@ -476,6 +561,7 @@ body{
     <button class="settings-link-btn" onclick="document.getElementById('importFile').click()">Восстановить из файла</button>
     <input type="file" id="importFile" accept=".json,application/json" style="display:none" onchange="importBackup(this.files[0])">
 
+    <button class="settings-link-btn" onclick="testWheel()">🎰 Тест колеса фортуны</button>
     <button class="danger-btn" onclick="resetAll()">Сбросить все данные приложения</button>
   </div>
 </div>
@@ -592,6 +678,19 @@ const DAILY_TASKS = [
  "Сегодня думай не про всю дистанцию, а только про «ещё один день».",
  "Найди сегодня 15 минут тишины без экрана — просто посиди с собой."
 ];
+
+/* ---------- ЗАДАНИЯ КОЛЕСА ФОРТУНЫ ---------- */
+const WHEEL_TASKS = [
+  { type: 'easy', label: 'ЛЁГКОЕ', text: 'Отжимания от пола — 15 раз', desc: 'Стандартные отжимания. Спина прямая, опускайся до касания груди пола. Дыши ровно.' },
+  { type: 'breath', label: 'ДЫХАНИЕ', text: 'Дыхание 4-7-8 — 3 цикла', desc: 'Вдох носом на 4 счёта. Задержи дыхание на 7. Выдох ртом на 8. Повтори 3 раза.' },
+  { type: 'hard', label: 'СЛОЖНОЕ', text: 'Отжимания — 50 раз', desc: 'Выполни 50 отжиманий. Можно разбить на подходы: 20-15-15 с отдыхом 30 секунд.' },
+  { type: 'hard', label: 'СЛОЖНОЕ', text: 'Планка — 2 минуты', desc: 'Удерживай планку на предплечьях или прямых руках. Спина и ноги — одна линия.' },
+  { type: 'breath', label: 'ДЫХАНИЕ', text: 'Коробочное дыхание — 5 мин', desc: 'Вдох 4 секунды, пауза 4 секунды, выдох 4 секунды, пауза 4 секунды. 5 минут без остановки.' },
+  { type: 'breath', label: 'ДЫХАНИЕ', text: 'Дыхание Вим Хофа — 3 раунда', desc: '30 глубоких вдохов. Выдохни всё и задержи на максимум. Затем вдохни и задержи 15 секунд. 3 раунда.' },
+  { type: 'exercise', label: 'ТЕЛО', text: 'Приседания — 30 раз', desc: 'Стандартные приседания. Колени не выходят за носки, спина прямая, опускайся до параллели с полом.' },
+  { type: 'exercise', label: 'ТЕЛО', text: 'Бёрпи — 20 раз', desc: 'Из стоя — упор лёжа с прыжком, отжимание, прыжок к рукам, взрывной прыжок вверх с хлопком.' }
+];
+
 function dailyTaskIndex(){
   const dateStr = new Date().toDateString();
   let hash=0;
@@ -723,6 +822,7 @@ function pearson(xs, ys){
    type:'particles' — плавающие искры на фоне всего приложения.
    type:'bg'        — оттенок мистического свечения фона. */
 const COSMETIC_REWARDS = [
+  {id:'matrix_rain',      type:'matrix_rain', day:15, color:'#00ff41', label:'Матричный дождь'},
   {id:'particles_violet', type:'particles', day:3,  color:'#8B5CF6', direction:'down', label:'Фиолетовые искры'},
   {id:'bg_teal',          type:'bg',        day:7,  glow1:'rgba(45,212,191,0.14)', glow2:'rgba(45,140,191,0.06)', swatch:'#2DD4BF', label:'Глубокий отблеск'},
   {id:'particles_gold',   type:'particles', day:9,  color:'#D4AF37', direction:'up',   label:'Золотые искры'},
@@ -786,9 +886,11 @@ function loadState(){
   };
 }
 let state = loadState();
+if(!state.wheel) state.wheel = { lastSpinDate: null, currentTask: null, completed: false, rotation: 0 };
+if(!state.activeMatrixRain) state.activeMatrixRain = null;
 function save(){ localStorage.setItem('retention_state_v1', JSON.stringify(state)); }
 function applyTheme(){
-  document.documentElement.setAttribute('data-theme', state.theme === 'light' ? 'light' : 'dark');
+  document.documentElement.setAttribute('data-theme', state.theme || 'dark');
 }
 function bestStreakEver(){
   return Math.max(state.bestStreak, currentDay());
@@ -1242,14 +1344,43 @@ function renderCosmetics(best){
 /* =========================================================
    НАВИГАЦИЯ
    ========================================================= */
-function switchView(v){
-  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
-  document.getElementById('view-'+v).classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach(el=>el.classList.toggle('active', el.dataset.v===v));
-  if(v==='home'){ renderHome(); checkRankUp(); }
-  if(v==='journal') renderJournal();
-  if(v==='stats') renderStats();
-  if(v==='ranks') renderRanks();
+function switchView(viewId) {
+  const views = document.querySelectorAll('.view');
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const targetView = document.getElementById('view-' + viewId);
+  const currentView = document.querySelector('.view.active');
+  
+  // Определяем направление анимации по порядку вкладок
+  const order = ['home', 'journal', 'stats', 'ranks'];
+  const currentIdx = currentView ? order.indexOf(currentView.id.replace('view-','')) : -1;
+  const targetIdx = order.indexOf(viewId);
+  const direction = targetIdx > currentIdx ? 'slide-right' : 'slide-left';
+  
+  // Снимаем active со всех
+  views.forEach(v => {
+    v.classList.remove('active', 'slide-left', 'slide-right');
+    // Принудительный reflow для сброса transition
+    void v.offsetWidth;
+  });
+  navBtns.forEach(b => b.classList.remove('active'));
+  
+  // Устанавливаем направление и активируем новую
+  if (targetView) {
+    targetView.classList.add(direction);
+    // Небольшая задержка для применения transform перед активацией
+    requestAnimationFrame(() => {
+      targetView.classList.add('active');
+    });
+  }
+  
+  // Активируем кнопку навигации
+  const activeBtn = document.querySelector('.nav-btn[data-v="' + viewId + '"]');
+  if (activeBtn) activeBtn.classList.add('active');
+  
+  // Обновляем данные если нужно
+  if (viewId === 'stats') renderStats();
+  if (viewId === 'ranks') renderRanks();
+  if (viewId === 'journal') renderJournal();
 }
 
 /* =========================================================
@@ -1291,19 +1422,22 @@ function openModal(name){
   }
 }
 function updateSettingsPillsUI(){
-  document.getElementById('themePillDark').classList.toggle('active', state.theme!=='light');
-  document.getElementById('themePillLight').classList.toggle('active', state.theme==='light');
+  document.getElementById('themePillDark').classList.toggle('active', state.theme==='dark');
+  document.getElementById('themePillMatrix').classList.toggle('active', state.theme==='matrix');
+  document.getElementById('themePillBlue').classList.toggle('active', state.theme==='blue');
   document.getElementById('modePillFull').classList.toggle('active', state.mode!=='nofap');
   document.getElementById('modePillNofap').classList.toggle('active', state.mode==='nofap');
 }
 function setTheme(theme){
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('theme', theme);
-  ['dark','light','blue'].forEach(t => {
-    const el = document.getElementById('themePill'+t[0].toUpperCase()+t.slice(1));
-    if(el) el.classList.toggle('active', t === theme);
+  document.documentElement.setAttribute('data-theme',theme);
+  state.theme=theme;
+  ['themePillDark','themePillMatrix','themePillBlue'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.classList.toggle('active', id==='themePill'+theme.charAt(0).toUpperCase()+theme.slice(1));
   });
+  saveState();
 }
+
 function setMode(m){
   state.mode = m;
   save();
@@ -1634,6 +1768,228 @@ function finishOnboarding(skipped){
   }
 }
 
+
+
+/* ---------- MATRIX RAIN ---------- */
+let matrixRainCtx = null, matrixRainCols = [], matrixRainActive = false, matrixRainRAF = null;
+const MATRIX_CHARS = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя';
+function initMatrixRain(){
+  const c = document.getElementById('matrixRainCanvas');
+  if(!c) return;
+  matrixRainCtx = c.getContext('2d');
+  resizeMatrixRain();
+  window.addEventListener('resize', resizeMatrixRain);
+}
+function resizeMatrixRain(){
+  const c = document.getElementById('matrixRainCanvas');
+  if(!c) return;
+  c.width = window.innerWidth;
+  c.height = window.innerHeight;
+  const fontSize = 14;
+  const cols = Math.floor(c.width / fontSize);
+  matrixRainCols = [];
+  for(let i=0;i<cols;i++) matrixRainCols.push(Math.random() * -100);
+}
+function drawMatrixRain(){
+  if(!matrixRainActive || !matrixRainCtx) return;
+  const c = document.getElementById('matrixRainCanvas');
+  const ctx = matrixRainCtx;
+  const w = c.width, h = c.height;
+  ctx.fillStyle = 'rgba(10, 11, 15, 0.05)';
+  ctx.fillRect(0, 0, w, h);
+  const fontSize = 14;
+  ctx.font = fontSize + 'px JetBrains Mono';
+  for(let i=0;i<matrixRainCols.length;i++){
+    const char = MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)];
+    const x = i * fontSize;
+    const y = matrixRainCols[i] * fontSize;
+    const isHead = Math.random() > 0.95;
+    ctx.fillStyle = isHead ? '#ffffff' : (state.theme==='matrix' ? '#00ff41' : 'var(--violet)');
+    ctx.globalAlpha = isHead ? 1 : 0.7;
+    ctx.fillText(char, x, y);
+    ctx.globalAlpha = 1;
+    if(y > h && Math.random() > 0.975) matrixRainCols[i] = 0;
+    else matrixRainCols[i]++;
+  }
+  matrixRainRAF = requestAnimationFrame(drawMatrixRain);
+}
+function startMatrixRain(){
+  const c = document.getElementById('matrixRainCanvas');
+  if(!c) return;
+  matrixRainActive = true;
+  c.classList.add('active');
+  if(!matrixRainCtx) initMatrixRain();
+  if(matrixRainRAF) cancelAnimationFrame(matrixRainRAF);
+  drawMatrixRain();
+}
+function stopMatrixRain(){
+  matrixRainActive = false;
+  const c = document.getElementById('matrixRainCanvas');
+  if(c) c.classList.remove('active');
+  if(matrixRainRAF) cancelAnimationFrame(matrixRainRAF);
+  if(matrixRainCtx){
+    const canv = document.getElementById('matrixRainCanvas');
+    if(canv) matrixRainCtx.clearRect(0,0,canv.width,canv.height);
+  }
+}
+
+/* =========================================================
+   WHEEL OF FORTUNE
+   ========================================================= */
+function getWheelColors(){
+  const t = state.theme || 'dark';
+  if(t==='blue') return ['#3B82F6','#38BDF8','#F87171','#1E40AF','#1A2540','#3B82F6','#38BDF8','#F87171'];
+  if(t==='matrix') return ['#00ff41','#00cc36','#ff2b2b','#008f11','#0a140a','#00ff41','#00cc36','#ff2b2b'];
+  return ['#8B5CF6','#D4AF37','#C0392B','#5B3FA0','#2A2D38','#8B5CF6','#D4AF37','#C0392B'];
+}
+function renderWheel(){
+  const g = document.getElementById('wheelGroup');
+  if(!g) return;
+  g.innerHTML = '';
+  const colors = getWheelColors();
+  const count = WHEEL_TASKS.length;
+  const radius = 48;
+  for(let i=0;i<count;i++){
+    const start = i * (360/count);
+    const end = (i+1) * (360/count);
+    const r1 = (start - 90) * Math.PI/180;
+    const r2 = (end - 90) * Math.PI/180;
+    const x1 = 50 + radius * Math.cos(r1);
+    const y1 = 50 + radius * Math.sin(r1);
+    const x2 = 50 + radius * Math.cos(r2);
+    const y2 = 50 + radius * Math.sin(r2);
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d', `M 50 50 L ${x1} ${y1} A ${radius} ${radius} 0 0 1 ${x2} ${y2} Z`);
+    path.setAttribute('fill', colors[i]);
+    path.setAttribute('stroke', 'var(--void)');
+    path.setAttribute('stroke-width', '1.2');
+    g.appendChild(path);
+    const mid = (start + end)/2 - 90;
+    const tx = 50 + 30 * Math.cos(mid * Math.PI/180);
+    const ty = 50 + 30 * Math.sin(mid * Math.PI/180);
+    const text = document.createElementNS('http://www.w3.org/2000/svg','text');
+    text.setAttribute('x', tx);
+    text.setAttribute('y', ty);
+    text.setAttribute('class', 'wheel-label');
+    text.textContent = WHEEL_TASKS[i].label;
+    g.appendChild(text);
+  }
+}
+function openWheel(){
+  renderWheel();
+  const overlay = document.getElementById('wheelOverlay');
+  const result = document.getElementById('wheelResult');
+  const spinBtn = document.getElementById('spinBtn');
+  const wheel = document.getElementById('wheelSvg');
+  if(overlay) overlay.classList.add('show');
+  if(result) result.style.display = 'none';
+  if(spinBtn){ spinBtn.style.display = 'flex'; spinBtn.disabled = false; }
+  if(wheel) wheel.style.transform = `rotate(${state.wheel.rotation}deg)`;
+}
+function closeWheel(){
+  const overlay = document.getElementById('wheelOverlay');
+  if(overlay) overlay.classList.remove('show');
+}
+function spinWheel(){
+  const btn = document.getElementById('spinBtn');
+  if(!btn || btn.disabled) return;
+  btn.disabled = true;
+  const targetIndex = Math.floor(Math.random() * WHEEL_TASKS.length);
+  const seg = 360 / WHEEL_TASKS.length;
+  const segCenter = targetIndex * seg + seg/2;
+  const spins = 5 + Math.floor(Math.random() * 4);
+  const cur = state.wheel.rotation;
+  const offset = ((segCenter - (cur % 360)) + 360) % 360;
+  const newRot = cur + spins * 360 + offset;
+  state.wheel.rotation = newRot;
+  const wheel = document.getElementById('wheelSvg');
+  if(wheel) wheel.style.transform = `rotate(${newRot}deg)`;
+  setTimeout(() => showWheelResult(targetIndex), 5200);
+}
+function showWheelResult(index){
+  const task = WHEEL_TASKS[index];
+  const spinBtn = document.getElementById('spinBtn');
+  const res = document.getElementById('wheelResult');
+  if(spinBtn) spinBtn.style.display = 'none';
+  if(res) res.style.display = 'block';
+  const rt = document.getElementById('wheelResultType');
+  const rtxt = document.getElementById('wheelResultText');
+  const rd = document.getElementById('wheelResultDesc');
+  if(rt) rt.textContent = task.label;
+  if(rtxt) rtxt.textContent = task.text;
+  if(rd) rd.textContent = task.desc;
+  state.wheel.currentTask = { ...task, index: index, date: new Date().toDateString() };
+  state.wheel.completed = false;
+  state.wheel.lastSpinDate = new Date().toDateString();
+  save();
+}
+function claimWheelTask(){
+  closeWheel();
+  renderWheelTaskCard();
+}
+function renderWheelTaskCard(){
+  const card = document.getElementById('wheelTaskCard');
+  const task = state.wheel.currentTask;
+  const today = new Date().toDateString();
+  if(!card) return;
+  if(!task || task.date !== today){
+    card.classList.remove('show');
+    return;
+  }
+  card.classList.add('show');
+  const wt = document.getElementById('wheelTaskType');
+  const wtxt = document.getElementById('wheelTaskText');
+  const wd = document.getElementById('wheelTaskDesc');
+  const btn = document.getElementById('wheelTaskBtn');
+  if(wt) wt.textContent = task.label;
+  if(wtxt) wtxt.textContent = task.text;
+  if(wd) wd.textContent = task.desc;
+  if(state.wheel.completed){
+    card.classList.add('done');
+    if(btn){ btn.textContent = 'Выполнено ✓'; btn.classList.remove('do'); btn.classList.add('done'); btn.disabled = true; }
+  } else {
+    card.classList.remove('done');
+    if(btn){ btn.textContent = 'Выполнил'; btn.classList.remove('done'); btn.classList.add('do'); btn.disabled = false; }
+  }
+}
+function completeWheelTask(){
+  if(!state.wheel.currentTask || state.wheel.completed) return;
+  state.wheel.completed = true;
+  save();
+  renderWheelTaskCard();
+  if(typeof confetti === 'function'){
+    confetti({ particleCount: 140, spread: 80, origin: { y: 0.6 }, colors: ['#D4AF37','#8B5CF6','#C0392B','#ffffff'] });
+  }
+  showToast('Вызов выполнен! Ты сильнее, чем вчера.');
+}
+function checkWheelDaily(){
+  const today = new Date().toDateString();
+  if(state.wheel.lastSpinDate !== today){
+    state.wheel.currentTask = null;
+    state.wheel.completed = false;
+    openWheel();
+  } else {
+    renderWheelTaskCard();
+  }
+}
+
+function testWheel(){
+  state.wheel.lastSpinDate = null;
+  state.wheel.currentTask = null;
+  state.wheel.completed = false;
+  openWheel();
+}
+function updateDayProgress(){
+  const now = new Date();
+  const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const end = new Date(start.getTime() + 86400000);
+  const pct = Math.min(1, Math.max(0, (now - start) / (end - start)));
+  const circumference = 2 * Math.PI * 118;
+  const offset = circumference * (1 - pct);
+  const ring = document.getElementById('dayProgressRing');
+  if(ring) ring.style.strokeDashoffset = offset;
+}
+setInterval(updateDayProgress, 30000);
 /* =========================================================
    INIT
    ========================================================= */
@@ -1649,11 +2005,33 @@ requestAnimationFrame(tickParticles);
 applyCosmetics();
 newQuote();
 renderHome();
+updateDayProgress();
+checkWheelDaily();
 checkRankUp();
 startLiveTimer();
 if(!state.onboardingDone){
   startOnboarding(false);
 }
 </script>
+<!-- WHEEL OF FORTUNE OVERLAY -->
+<div class="wheel-overlay" id="wheelOverlay">
+  <button class="wheel-close" onclick="closeWheel()">×</button>
+  <div class="wheel-title">Колесо Фортуны</div>
+  <div class="wheel-sub">Крути колесо и получи вызов на сегодня. Новый спин доступен после полуночи.</div>
+  <div class="wheel-box">
+    <div class="wheel-pointer"></div>
+    <svg class="wheel-svg" id="wheelSvg" viewBox="0 0 100 100"><g id="wheelGroup"></g></svg>
+    <button class="wheel-center-btn" id="spinBtn" onclick="spinWheel()">КРУТИТЬ</button>
+  </div>
+  <div class="wheel-result" id="wheelResult">
+    <div class="wheel-result-card">
+      <div class="wheel-result-type" id="wheelResultType">ТИП</div>
+      <div class="wheel-result-text" id="wheelResultText">Задание</div>
+      <div class="wheel-result-desc" id="wheelResultDesc">Описание</div>
+    </div>
+    <button class="wheel-claim-btn" onclick="claimWheelTask()">Забрать вызов</button>
+  </div>
+</div>
+
 </body>
 </html>
