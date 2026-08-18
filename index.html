@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-   <link rel="manifest" href="manifest (2).json">
+      <link rel="manifest" href="manifest (2).json">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -83,8 +83,8 @@
         }
         body {
             background:
-                radial-gradient(ellipse 700px 500px at 50% -10%, var(--glow1), transparent 65%),
-                radial-gradient(ellipse 600px 600px at 90% 100%, var(--glow2), transparent 65%),
+                radial-gradient(ellipse 800px 600px at 50% 0%, var(--glow1), transparent 70%),
+                radial-gradient(ellipse 700px 550px at 50% 100%, var(--glow2), transparent 70%),
                 var(--void);
             min-height: 100vh;
             transition: background-color 0.4s ease, background 0.6s ease;
@@ -752,22 +752,115 @@
         }
 
         /* ===== STATS ===== */
+        .stat-hero {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            background: radial-gradient(120% 140% at 0% 0%, var(--glow1), transparent 60%), var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 18px;
+            overflow: hidden;
+            cursor: default;
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+        .stat-hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(115deg, transparent 30%, rgba(212, 175, 55, 0.05) 48%, transparent 66%);
+            background-size: 220% 220%;
+            background-position: 120% 0%;
+            opacity: 0;
+            transition: opacity 0.5s ease, background-position 1.1s ease;
+            pointer-events: none;
+        }
+        .stat-hero:hover::before {
+            opacity: 1;
+            background-position: -20% 100%;
+        }
+        .stat-hero:hover {
+            border-color: rgba(139, 92, 246, 0.22);
+            box-shadow: 0 10px 34px rgba(139, 92, 246, 0.1);
+        }
+        .stat-hero-ring {
+            position: relative;
+            width: 96px;
+            height: 96px;
+            flex: none;
+        }
+        .stat-hero-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+        .stat-hero-ring circle {
+            fill: none;
+            stroke-width: 6;
+        }
+        .stat-hero-ring .track { stroke: var(--line); }
+        .stat-hero-ring .fill {
+            stroke: var(--gold);
+            stroke-linecap: round;
+            stroke-dasharray: 251.2;
+            stroke-dashoffset: 251.2;
+            transition: stroke-dashoffset 1.1s cubic-bezier(0.22, 1, 0.36, 1), stroke 0.4s ease;
+            filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.35));
+        }
+        .stat-hero-num {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .stat-hero-num .n {
+            font-family: var(--font-mono);
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--gold);
+            line-height: 1;
+        }
+        .stat-hero-num .u {
+            font-size: 9px;
+            color: var(--text-muted);
+            letter-spacing: 0.06em;
+            margin-top: 3px;
+            text-transform: uppercase;
+        }
+        .stat-hero-info { min-width: 0; flex: 1; }
+        .stat-hero-title {
+            font-family: var(--font-display);
+            font-size: 15px;
+            color: var(--text);
+            letter-spacing: 0.02em;
+        }
+        .stat-hero-sub {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            line-height: 1.45;
+        }
+        .stat-hero-sub b { color: var(--violet); font-weight: 600; }
+
         .stat-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
+            margin-top: 10px;
         }
         .stat-box {
+            position: relative;
             background: var(--panel);
             border: 1px solid var(--line);
             border-radius: 14px;
             padding: 14px;
+            overflow: hidden;
+            cursor: default;
             transition: transform 0.25s ease, box-shadow 0.3s ease, border-color 0.3s ease;
         }
         .stat-box:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(139, 92, 246, 0.06);
-            border-color: rgba(139, 92, 246, 0.15);
+            box-shadow: 0 6px 24px rgba(139, 92, 246, 0.08);
+            border-color: rgba(139, 92, 246, 0.2);
         }
         .stat-box .num {
             font-family: var(--font-mono);
@@ -775,11 +868,24 @@
             font-weight: 700;
             color: var(--gold);
             transition: color 0.3s ease;
+            position: relative;
+            z-index: 1;
         }
         .stat-box .lab {
             font-size: 11px;
             color: var(--text-muted);
             margin-top: 2px;
+            position: relative;
+            z-index: 1;
+        }
+        .stat-box .bar-underlay {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 3px;
+            width: 0%;
+            background: linear-gradient(90deg, var(--violet-dim), var(--violet));
+            transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
         }
         .bars {
             display: flex;
@@ -810,7 +916,7 @@
             transition: height 0.6s cubic-bezier(0.23, 1, 0.32, 1), background 0.4s ease;
         }
         .bar-fill.current {
-            background: linear-gradient(180deg, var(--gold), #8a6d1f);
+            background: var(--gold);
             box-shadow: 0 0 20px rgba(212, 175, 55, 0.20);
         }
         .bar-tag {
@@ -2167,11 +2273,29 @@
         <!-- STATS -->
         <div class="view" id="view-stats">
             <div class="section-title"><div class="dash"></div>Статистика</div>
+
+            <div class="stat-hero" id="statHero">
+                <div class="stat-hero-ring">
+                    <svg viewBox="0 0 90 90">
+                        <circle class="track" cx="45" cy="45" r="40"/>
+                        <circle class="fill" id="statHeroRingFill" cx="45" cy="45" r="40"/>
+                    </svg>
+                    <div class="stat-hero-num">
+                        <div class="n" id="statCurrent">0</div>
+                        <div class="u">день</div>
+                    </div>
+                </div>
+                <div class="stat-hero-info">
+                    <div class="stat-hero-title" id="statHeroTitle">Путь начат</div>
+                    <div class="stat-hero-sub" id="statHeroSub">Собираем данные…</div>
+                </div>
+            </div>
+
             <div class="stat-grid">
-                <div class="stat-box"><div class="num" id="statCurrent">0</div><div class="lab">Текущий стрик</div></div>
-                <div class="stat-box"><div class="num" id="statBest">0</div><div class="lab">Рекорд</div></div>
-                <div class="stat-box"><div class="num" id="statAttempts">0</div><div class="lab">Попыток</div></div>
-                <div class="stat-box"><div class="num" id="statTotal">0</div><div class="lab">Дней всего практики</div></div>
+                <div class="stat-box" id="statBoxBest"><div class="num" id="statBest">0</div><div class="lab">Рекорд</div><div class="bar-underlay" id="statBarBest"></div></div>
+                <div class="stat-box" id="statBoxAttempts"><div class="num" id="statAttempts">0</div><div class="lab">Попыток</div><div class="bar-underlay" id="statBarAttempts"></div></div>
+                <div class="stat-box" id="statBoxTotal"><div class="num" id="statTotal">0</div><div class="lab">Дней всего практики</div><div class="bar-underlay" id="statBarTotal"></div></div>
+                <div class="stat-box" id="statBoxAvg"><div class="num" id="statAvg">0</div><div class="lab">Средний стрик</div><div class="bar-underlay" id="statBarAvg"></div></div>
             </div>
             <div class="section-title"><div class="dash"></div>История стриков</div>
             <div id="barsWrap"></div>
@@ -2483,15 +2607,25 @@
         const COSMETIC_REWARDS = [
             { id: 'matrix_rain', type: 'matrix_rain', day: 15, color: '#00ff41', label: 'Матричный дождь' },
             { id: 'particles_violet', type: 'particles', day: 3, color: '#8B5CF6', direction: 'down', label: 'Фиолетовые искры' },
-            { id: 'bg_teal', type: 'bg', day: 7, glow1: 'rgba(45,212,191,0.14)', glow2: 'rgba(45,140,191,0.06)',
+            { id: 'bg_teal', type: 'bg', day: 7, glow1: 'rgba(45,212,191,0.26)', glow2: 'rgba(45,140,191,0.14)',
             swatch: '#2DD4BF', label: 'Глубокий отблеск' },
             { id: 'particles_gold', type: 'particles', day: 9, color: '#D4AF37', direction: 'up', label: 'Золотые искры' },
-            { id: 'bg_violet', type: 'bg', day: 14, glow1: 'rgba(139,92,246,0.22)', glow2: 'rgba(91,63,160,0.10)',
+            { id: 'bg_violet', type: 'bg', day: 14, glow1: 'rgba(139,92,246,0.32)', glow2: 'rgba(91,63,160,0.16)',
                 swatch: '#8B5CF6', label: 'Глубокий фиолет' },
             { id: 'particles_orange', type: 'particles', day: 20, color: '#F97316', direction: 'up', label: 'Оранжевые искры' },
+            { id: 'bg_ice', type: 'bg', day: 22, glow1: 'rgba(56,189,248,0.28)', glow2: 'rgba(14,116,144,0.14)',
+                swatch: '#38BDF8', label: 'Ледяное сияние' },
             { id: 'particles_red', type: 'particles', day: 25, color: '#DC2626', direction: 'up', label: 'Алые искры' },
-            { id: 'bg_royal', type: 'bg', day: 30, glow1: 'rgba(212,175,55,0.20)', glow2: 'rgba(139,92,246,0.12)',
-                swatch: '#D4AF37', label: 'Королевское сияние' }
+            { id: 'bg_royal', type: 'bg', day: 30, glow1: 'rgba(212,175,55,0.28)', glow2: 'rgba(139,92,246,0.16)',
+                swatch: '#D4AF37', label: 'Королевское сияние' },
+            { id: 'bg_crimson', type: 'bg', day: 45, glow1: 'rgba(224,60,60,0.26)', glow2: 'rgba(122,38,32,0.14)',
+                swatch: '#C0392B', label: 'Багровый отблеск' },
+            { id: 'bg_emerald', type: 'bg', day: 60, glow1: 'rgba(16,185,129,0.26)', glow2: 'rgba(6,95,70,0.14)',
+                swatch: '#10B981', label: 'Изумрудное сияние' },
+            { id: 'bg_rose', type: 'bg', day: 75, glow1: 'rgba(236,72,153,0.24)', glow2: 'rgba(157,23,77,0.12)',
+                swatch: '#EC4899', label: 'Розовый отблеск' },
+            { id: 'bg_copper', type: 'bg', day: 90, glow1: 'rgba(199,120,74,0.26)', glow2: 'rgba(120,66,38,0.14)',
+                swatch: '#C7784A', label: 'Медное сияние' }
         ];
 
         const ONBOARDING = [{
@@ -2628,6 +2762,14 @@
         function nextRank(d) {
             for (const item of RANKS) { if (item.day > d) return item; }
             return null;
+        }
+
+        function declOfDays(n) {
+            const n10 = n % 10, n100 = n % 100;
+            if (n100 >= 11 && n100 <= 14) return 'дней';
+            if (n10 === 1) return 'день';
+            if (n10 >= 2 && n10 <= 4) return 'дня';
+            return 'дней';
         }
 
         function bestStreakEver() { return Math.max(state.bestStreak, currentDay()); }
@@ -3071,14 +3213,63 @@
         /* =========================================================
            STATS
            ========================================================= */
+        function animateNumber(el, target, duration = 900) {
+            if (!el) return;
+            const start = Number(el.dataset.val || 0);
+            if (start === target) { el.textContent = target; return; }
+            el.dataset.val = target;
+            const t0 = performance.now();
+            const ease = t => 1 - Math.pow(1 - t, 3);
+            function step(now) {
+                const p = Math.min(1, (now - t0) / duration);
+                const v = Math.round(start + (target - start) * ease(p));
+                el.textContent = v;
+                if (p < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+        }
+
         function renderStats() {
             const d = currentDay();
             const best = Math.max(state.bestStreak, d);
-            document.getElementById('statCurrent').textContent = d;
-            document.getElementById('statBest').textContent = best;
-            document.getElementById('statAttempts').textContent = state.relapses.length + 1;
+            const attempts = state.relapses.length + 1;
             const totalPast = state.relapses.reduce((s, r) => s + r.streakDays, 0);
-            document.getElementById('statTotal').textContent = totalPast + d;
+            const total = totalPast + d;
+            const avg = Math.round(total / attempts);
+
+            animateNumber(document.getElementById('statCurrent'), d);
+            animateNumber(document.getElementById('statBest'), best);
+            animateNumber(document.getElementById('statAttempts'), attempts);
+            animateNumber(document.getElementById('statTotal'), total);
+            animateNumber(document.getElementById('statAvg'), avg);
+
+            const nr = nextRank(d);
+            const ring = document.getElementById('statHeroRingFill');
+            const CIRC = 251.2;
+            if (nr) {
+                const prevThreshold = rankForDay(d).day;
+                const span = Math.max(1, nr.day - prevThreshold);
+                const progress = Math.min(1, (d - prevThreshold) / span);
+                ring.style.stroke = 'var(--gold)';
+                ring.style.strokeDashoffset = String(CIRC * (1 - progress));
+                document.getElementById('statHeroSub').innerHTML =
+                    `До ранга «<b>${nr.name}</b>» осталось <b>${nr.day - d}</b> ${declOfDays(nr.day - d)}`;
+            } else {
+                ring.style.stroke = 'var(--violet)';
+                ring.style.strokeDashoffset = '0';
+                document.getElementById('statHeroSub').textContent = 'Все ранги пути пройдены.';
+            }
+            document.getElementById('statHeroTitle').textContent = rankForDay(d).name;
+
+            const maxVal = Math.max(best, attempts, total, avg, 1);
+            const bars = [
+                ['statBarBest', best], ['statBarAttempts', attempts],
+                ['statBarTotal', total], ['statBarAvg', avg]
+            ];
+            bars.forEach(([id, v]) => {
+                const el = document.getElementById(id);
+                if (el) requestAnimationFrame(() => { el.style.width = `${Math.max(4, Math.round((v / maxVal) * 100))}%`; });
+            });
 
             const history = [...state.relapses.map(r => r.streakDays), d];
             const last = history.slice(-8);
